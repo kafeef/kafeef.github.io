@@ -1,0 +1,136 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #ecfadc;
+  min-height: 100vh;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  direction: rtl;
+}
+
+/* --- HEADERS --- */
+h1 {
+  font-family: 'Aref Ruqaa', serif;
+  font-size: 42px;
+  margin-bottom: 30px;
+  color: #28462b;
+  animation: fadeIn 1.5s ease-out;
+  text-shadow: 0px 0px 50px #2f4931b4;
+}
+
+.header {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logout-btn {
+  font-family: 'Aref Ruqaa', serif;
+  background-color: #609164bb;
+  color: #ecfadc;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.logout-btn:hover { background-color: #609164; }
+
+/* --- CARDS --- */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 280px;
+  background: #ffffff00;
+  border-radius: 25px;
+  box-shadow: 0px 40px 40px rgba(17, 54, 0, 0.2);
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  animation: slideUp .75s ease-out forwards;
+}
+
+.card:hover {
+  box-shadow: 0 30px 40px rgba(17,54,0,0.25);
+}
+
+.text-preview {
+  font-family: 'Lateef', serif;
+  font-size: 24px;
+  color: #2f4931;
+  margin-bottom: 20px;
+}
+
+/* --- BUTTONS --- */
+.download-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 18px;
+  background-color: #7bc781;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: #9fd4a3;
+  transform: scale(1.05);
+}
+
+.na { background-color: #caddc581; }
+.na:hover { background-color: #ff9999; }
+
+/* --- MODAL --- */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+}
+
+.modal-content {
+  font-family: 'Lateef', serif;
+  background-color: #c9ddb2;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.close {
+  float: left;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* --- FOOTER --- */
+.footer {
+  font-family: 'Aref Ruqaa', serif;
+  margin-top: 50px;
+  opacity: 0.7;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp { from { opacity:0; transform:translateY(40px)} to {opacity:1; transform:none} }
