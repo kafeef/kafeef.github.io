@@ -329,7 +329,7 @@
     }
     .modal-content {
       font-family: 'Lateef', serif;
-      background-color: #c9ddb2;
+      background-color: #beceacbb;
       margin: 10% auto;
       padding: 20px;
       border-radius: 12px;
@@ -340,14 +340,14 @@
       animation: modalFade 0.4s ease-out;
     }
     @keyframes modalFade { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    .close { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; }
-    .close:hover { color: #333; }
+    .close { color: #535f46; float: left; font-size: 22px; font-weight: bold; cursor: pointer; transition: ease 0.3s;}
+    .close:hover { color: #c01313; transform: rotate(90deg) scale(1.2);}
     .modal-content h3 { margin-bottom: 20px; font-family: 'Aref Ruqaa', serif; font-size: 24px; color: #2f4931; }
     .download-list { display: flex; flex-direction: column; gap: 12px; }
     .download-option {
-      background-color: #2f4931b0; font-family: 'Lateef', serif; color: white; border: none; border-radius: 10px; padding: 10px; font-size: 20px; cursor: pointer; transition: background 0.2s ease; width: 100%;
+      background-color: #5caa62d3; font-family: 'Lateef', serif; color: white; border: none; border-radius: 10px; padding: 10px; font-size: 20px; cursor: pointer; transition: background 0.5s ease; width: 100%;
     }
-    .download-option:hover { background-color: #2f4931; }
+    .download-option:hover { background-color: #408345; }
     .button-group { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
   </style>
 </head>
@@ -601,13 +601,15 @@
   </div>
   <div id="downloadModal" class="modal" role="dialog" aria-hidden="true" aria-labelledby="modal-title">
     <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
+      <span class="close" onclick="closeModal()">&#128473;</span>
       <h3 id="modal-title">تحميل</h3>
       <div class="download-list" id="downloadList"></div>
     </div>
   </div>
 
   <script type="module">
+    
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -635,6 +637,8 @@
         window.location.href = './login';
       }).catch(error => alert(error.message));
     });
+
+    
   </script>
 
   <script>
@@ -678,5 +682,4 @@
   </script>
 </body>
 </html>
-
 
