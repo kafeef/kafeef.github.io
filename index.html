@@ -451,8 +451,8 @@
     <div class="card ahya">
       <div class="text-preview">أحياء</div>
       <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
+        <a href="pdf/ahya_nooreldien.pdf">
+          <button class="download-btn">
             <img src="icon/ahyaicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
@@ -471,8 +471,8 @@
     <div class="card fyzya">
       <div class="text-preview">فيزياء</div>
       <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
+        <a href="pdf/fyzya_11_firstterm.pdf">
+          <button class="download-btn">
             <img src="icon/fyzyaicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
@@ -511,10 +511,13 @@
     <div class="card tauheedh">
       <div class="text-preview">توحيد</div>
       <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
+        <a>
+        <button class="download-btn" onclick='openModal("توحيد", [
+          { file: "pdf/shifaa_1.pdf", name: "شفاء العليل" },
+          { file: "pdf/shifaa_1_text.pdf", name: "شفاء العليل - مع المتن" },
+        ])'>
             <img src="icon/tauheedhicon.png" alt="Download" class="subjectimg">
-          </button>
+        </button>
         </a>
       </div>
     </div>
@@ -571,14 +574,10 @@
     <div class="card kuthub">
       <div class="text-preview">كتب</div>
       <div class="button-group">
-        <a>
-        <button class="download-btn" onclick='openModal("كتب", [
-          { file: "pdf/ahya_nooreldien.pdf", name: "أحياء نورالدين" },
-          { file: "pdf/shifaa_1.pdf", name: "شفاء العليل" },
-          { file: "pdf/shifaa_1_text.pdf", name: "شفاء العليل - مع المتن" },
-        ])'>
+        <a href="./404">
+          <button class="download-btn na">
             <img src="icon/kuthubicon.png" alt="Download" class="subjectimg">
-        </button>
+          </button>
         </a>
       </div>
     </div>
