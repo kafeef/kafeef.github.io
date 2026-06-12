@@ -501,10 +501,14 @@
     <div class="card fiqh">
       <div class="text-preview">فقه</div>
       <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
+        <a>
+        <button class="download-btn" onclick='openModal("فقه", [
+          { file: "pdf/11_fiqh_firstterm.pdf", name: "جمع دروس الفقه" },
+          { file: "pdf/11_fiqh_firsttermBUNK.pdf", name: "بنك الأسئلة" },
+          { file: "pdf/11_fiqh_firsttermQnA.pdf", name: "أسئلة مع الأجوبة" }
+        ])'>
             <img src="icon/fiqhicon.png" alt="Download" class="subjectimg">
-          </button>
+        </button>
         </a>
       </div>
     </div>
