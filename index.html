@@ -471,10 +471,13 @@
     <div class="card fyzya">
       <div class="text-preview">فيزياء</div>
       <div class="button-group">
-        <a href="pdf/fyzya_11_firstterm.pdf" target="_blank">
-          <button class="download-btn">
+        <a>
+        <button class="download-btn" onclick='openModal("فيزياء", [
+          { file: "pdf/fyzya_11_firstterm.pdf", name: "كتاب فيزياء" },
+          { file: "pdf/fyzyaQawanin_11.pdf", name: "ملخص قوانين فيزياء" }
+        ])'>
             <img src="icon/fyzyaicon.png" alt="Download" class="subjectimg">
-          </button>
+        </button>
         </a>
       </div>
     </div>
