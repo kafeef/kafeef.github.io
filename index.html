@@ -255,6 +255,31 @@
         background-position-x: 160px;
         background-blend-mode: lighten;
     }
+
+    .flash-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background-color: #7bc781;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    .flash-btn:hover {
+      background-color: #9fd4a3;
+      transform: scale(1.05);
+    }
+    .flash-btn img {
+      max-width: 24px;
+      max-height: 24px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+    
     .download-btn {
       display: flex;
       align-items: center;
@@ -358,6 +383,11 @@
             <img src="icon/nahuicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
+            <a href="./flash/nahu.html">
+      <button class="flash-btn">
+        <img src="icon/flash.png" alt="Flash Cards">
+      </button>
+    </a>
       </div>
     </div>
     <div class="card insha">
@@ -368,6 +398,11 @@
             <img src="icon/inshaicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
+            <a href="./flash/insha.html">
+      <button class="flash-btn">
+        <img src="icon/flash.png" alt="Flash Cards">
+      </button>
+    </a>
       </div>
     </div>
     <div class="card zorf">
@@ -388,6 +423,11 @@
             <img src="icon/adabicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
+            <a href="./flash/adab.html">
+      <button class="flash-btn">
+        <img src="icon/flash.png" alt="Flash Cards">
+      </button>
+    </a>
       </div>
     </div>
     <div class="card nusus">
@@ -513,6 +553,7 @@
         </a>
       </div>
     </div>
+<!-- ahabee maahdhaa thah furathama term ga nuliyeveythee reethikollan nufenna goi hadhaafa-->
 <!--    <div class="card thaareekh">
       <div class="text-preview">تاريخ</div>
       <div class="button-group">
@@ -673,4 +714,3 @@
   </script>
 </body>
 </html>
-
