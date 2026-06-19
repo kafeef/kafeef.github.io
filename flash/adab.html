@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" direction="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>أدب فلاش - كفيف</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta property="og:image" content="11.png" />
+  <link rel="icon" type="image/png" href="11.png"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Lateef&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1b4332;
+      --primary-light: #2d6a4f;
+      --accent-color: #d4a373;
+      --accent-hover: #c39262;
+      --bg-gradient: linear-gradient(135deg, #e6f7d3 0%, #ecfadc 100%);
+      --card-front-bg: #ffffff;
+      --card-back-bg: #e8f5e9;
+      --text-dark: #132a13;
+      --success-color: #52b788;
+      --danger-color: #e91f30;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Lateef', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      direction: rtl;
+      color: var(--text-dark);
+    }
+    
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 5px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    h1 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 44px;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.03);
+      margin-bottom: 5px;
+    }
+
+    .dashboard {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 15px 20px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .thafaas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      color: var(--primary-light);
+    }
+
+    .dharaja {
+      display: flex;
+      gap: 12px;
+    }
+
+    .score-badge {
+      padding: 2px 10px;
+      border-radius: 12px;
+      color: white;
+      font-size: 21px;
+    }
+    .score-badge.mastered { background-color: var(--success-color); }
+    .score-badge.review { background-color: #afbda9; color: var(--text-dark); }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--success-color), var(--primary-light));
+      border-radius: 10px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard-wrapper {
+      perspective: 1200px;
+      width: 100%;
+      height: 380px;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 28px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(27, 67, 50, 0.06);
+      border: 2px solid rgba(255,255,255,0.8);
+      overflow-y: auto;
+    }
+
+    .flashcard-wrapper:hover .card-side {
+      box-shadow: 0 25px 50px rgba(27, 67, 50, 0.15);
+    }
+
+    .side-front {
+      background: var(--card-front-bg);
+      color: var(--primary-color);
+    }
+
+    .side-back {
+      background: var(--card-back-bg);
+      color: var(--text-dark);
+      transform: rotateY(180deg);
+      border: 2px dashed var(--primary-light);
+    }
+
+    .side-hint {
+      font-size: 12px;
+      position: absolute;
+      top: 20px;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 4px 14px;
+      border-radius: 30px;
+      color: #555;
+    }
+
+    .card-text {
+      font-size: 28px;
+      line-height: 1.6;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .assessment-row {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .assess-btn {
+      flex: 1;
+      font-family: 'Lateef', sans-serif;
+      font-size: 20px;
+      border: none;
+      padding: 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .assess-btn.know { background-color: var(--success-color); }
+    .assess-btn.know:hover { background-color: #40a073; }
+    .assess-btn.dont-know { background-color: var(--danger-color); }
+    .assess-btn.dont-know:hover { background-color: #d62839; }
+
+    .controls-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .main-controls {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .game-btn {
+      font-family: 'Lateef', sans-serif;
+      font-size: 24px;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.03);
+    }
+
+    .btn-nav {
+      background-color: var(--primary-color);
+      color: white;
+      flex: 2;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background-color: var(--primary-light);
+    }
+
+    .btn-flip {
+      background-color: var(--accent-color);
+      color: white;
+      flex: 3;
+    }
+    .btn-flip:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-utility {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: var(--text-dark);
+      border: 1px solid rgba(0,0,0,0.06);
+      width: 100%;
+      font-size: 22px;
+    }
+    .btn-utility:hover {
+      background-color: #ffffff;
+      color: var(--primary-light);
+    }
+
+    .game-btn:disabled {
+      background-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .celebration-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(27, 67, 50, 0.95);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .celebration-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .celebration-box {
+      background: white;
+      color: var(--text-dark);
+      padding: 40px 30px;
+      border-radius: 28px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      transform: scale(0.8);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .celebration-overlay.active .celebration-box {
+      transform: scale(1);
+    }
+    .celebration-title {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 45px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .footer {
+      font-family: 'Aref Ruqaa', serif;
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px 0;
+      font-size: 20px;
+      color: #2f4931;
+      opacity: 0.7;
+      border-top: 1px solid #ccc;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .flashcard-wrapper { height: 340px; }
+      .card-text { font-size: 20px; }
+      .main-controls { flex-direction: column; }
+      .game-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div class="header">
+      <h1>أدب</h1>
+    </div>
+
+    <div class="dashboard">
+      <div class="thafaas">
+        <div id="progressPercentage">التقدم الفعلي: 0%</div>
+        <div class="dharaja">
+          <span class="score-badge mastered" id="masteredCount">عرفتها: 0</span>
+          <span class="score-badge review" id="cardProgress">البطاقة 0 من 0</span>
+        </div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+    </div>
+
+    <div class="flashcard-wrapper" onclick="toggleCardFlip()">
+      <div class="flashcard" id="flashcardElement">
+        <div class="card-side side-front">
+          <span class="side-hint">السؤال</span>
+          <div class="card-text" id="questionDisplay">جاري التحميل...</div>
+        </div>
+        <div class="card-side side-back">
+          <span class="side-hint">الإجابة</span>
+          <div class="card-text" id="answerDisplay">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assessment-row" id="assessmentRow" style="visibility: hidden;">
+      <button class="assess-btn know" onclick="markCard(true)">عرفت الإجابة</button>
+      <button class="assess-btn dont-know" onclick="markCard(false)">أحتاج لمراجعتها</button>
+    </div>
+
+    <div class="controls-container">
+      <div class="main-controls">
+        <button class="game-btn btn-nav" id="prevCardBtn" onclick="event.stopPropagation(); changeCard(-1)">السابقة</button>
+        <button class="game-btn btn-flip" id="flipCardBtn" onclick="event.stopPropagation(); toggleCardFlip();">قلب</button>
+        <button class="game-btn btn-nav" id="nextCardBtn" onclick="event.stopPropagation(); changeCard(1)">التالية</button>
+      </div>
+      
+      <button style="background-color: rgb(241, 45, 45); color: #ffffff;" class="game-btn btn-utility" onclick="event.stopPropagation(); shuffleCards()">خلط البطاقات عشوائياً</button>
+    </div>
+
+    <footer class="footer">
+      حقوق الطبع والنشر محفوظة لأصحابها الشرعيين
+    </footer>
+
+  </div>
+
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-box">
+      <div class="celebration-title">صفق نفسك! (بالسبابتان)</div>
+      <p style="font-size: 20px; margin-bottom: 20px; line-height: 1.6;">بسم الله ماشاءالله! ما هذه الاجابات الجميالة. لا أحد يستطيع أن يكون مثلك</p>
+      <div style="background: #f4fbf4; padding: 15px; border-radius: 16px; margin-bottom: 25px; color: var(--primary-color);" id="finalScoreText">
+        البطاقات التي عرفتها: 0 من 0
+      </div>
+      <button class="game-btn btn-flip" style="width:100%;" onclick="restartDeck()">إعادة المذاكرة من جديد</button>
+    </div>
+  </div>
+
+  <script>
+let flashcards = [
+  { q: "علامَ اختلف الباحثون في دراستهم للعصر العباسي؟", a: "اختلف الباحثون في تقسيم العصر العباسي إلى مراحل." },
+  { q: "علامَ اتفق الباحثون في دراستهم للعصر العباسي؟", a: "اتفقوا على أنه يبدأ عام ١٣٢ هـ وينتهي عام ٦٥٦ هـ." },
+  { q: "ما هي الأسباب الثلاثة لاختلاف الباحثين في تقسيم العصر العباسي؟", a: "١ - طول العصر العباسي الذي يبلغ خمسة قرون.\n٢ - صعوبة مجاراة الأحداث والوقائع.\n٣ - الوقوف على الخصائص الفنية لكل إقليم في الدولة العباسية." },
+  { q: "ما هي المدة الزمنية للعصر العباسي الأول؟", a: "يبدأ عام ١٣٢ هـ وينتهي عام ٢٣٢ هـ." },
+  { q: "ما هي المدة الزمنية للعصر العباسي الثاني؟", a: "يبدأ عام ٢٣٢ هـ وينتهي عام ٣٣٤ هـ." },
+  { q: "ما هي المدة الزمنية للعصر العباسي الثالث؟", a: "يبدأ عام ٣٣٤ هـ وينتهي عام ٤٤٧ هـ." },
+  { q: "ما هي المدة الزمنية للعصر العباسي الرابع؟", a: "يبدأ عام ٤٤٧ هـ وينتهي عام ٦٥٦ هـ." },
+  { q: "علل: نشطت الدعوة العباسية في بلاد فارس.", a: "حيث حمل لواء الدعوة هناك أبو مسلم الخراساني الذي حارب الأمويين وقضى على دولتهم." },
+  { q: "اذكر الخلفاء الخمسة للدولة العباسية الذين ورد ذكرهم في الملف.", a: "أبو العباس السفاح - أبو جعفر المنصور - هارون الرشيد - المأمون - المعتصم." },
+  { q: "كيف كانت الأحوال السياسية ومقاليد الحكم في المائة عام الأولى من الدولة العباسية؟", a: "في المائة عام الأولى كانت الدولة وحكامها أقوياء." },
+  { q: "كيف تغيرت مقاليد الحكم ومنصب الخليفة بعد المائة عام الأولى؟", a: "صارت مقاليد الحكم في يد الأتراك تارة والفرس تارة أخرى، وصار المنصب صورياً والخليفة ألعوبة في يد الحكام الفعليين من الأتراك والفرس." },
+  { q: "ما سبب عيش الخلفاء وحاشيتهم حياة مترفة ناعمة؟", a: "بسبب الأموال التي تُجبى إليهم من أطراف البلاد." },
+  { q: "ما هي مظاهر الإنفاق المفرط في الحياة الاجتماعية العباسية؟", a: "كثرة الإنفاق على موائد الطعام والشراب وشراء الجواري والغلمان ومجالس الغناء وتعاطي الخمر." },
+  { q: "ما هي الحركة الشعوبية؟ وما هدفها؟", a: "هي حركة مناهضة للعرب ترد على تعصب الأمويين للعرب وتنادي بالتسوية بين العرب وغيرهم." },
+  { q: "كيف ظهر أثر تقديم الفرس على العرب اجتماعيّاً؟", a: "ظهر من يجهر بتفضيل الفرس على العرب ويستهزئ بأخلاقهم وثقافتهم." },
+  { q: "متى ازدهرت الحياة العلمية في العصر العباسي تحديداً؟", a: "ازدهرت الحياة العلمية في العصر العباسي في القرن الرابع الهجري." },
+  { q: "اذكر أول ثلاثة عوامل ساعدت على ازدهار الحياة العلمية العباسية.", a: "١ - انتشار حلقات التعليم في المساجد والكتاتيب.\n٢ - كثرة الهبات والعطايا التي يعطيها الخلفاء للعلماء والمؤدبين.\n٣ - شيوع الجدل والمناظرة في مجالس الخلفاء وغيرهم." },
+  { q: "ما أثر حركة الترجمة في الحياة العلمية؟ ومن الخليفة الذي تميز عهده بذلك؟", a: "نشطت حركة الترجمة عن الفارسية واليونانية وغيرها، خاصة في عهد هارون الرشيد الذي أنشأ دار الحكمة في بغداد." },
+  { q: "ما هي العلوم التي ازدهرت ونشطت حركة تدوين مروياتها؟", a: "ازدهرت علوم اللغة والنحو والرواية، ونشطت حركة تدوين المرويات في العلوم الشرعية مما ساعد على حدوث نهضة علمية في دراسة التفسير والحديث والفقه وغيرها." },
+  { q: "كيف ساهم إغداق الخلفاء للهبات في ازدهار الشعر؟ (اذكر المثالين المذكورين).", a: "- أعطى الخليفة محمد المهدي الشاعر مروان بن أبي حفصة مائة ألف درهم.\n- أعطى الخليفة هارون الرشيد الشاعر سلم الحاسر عشرين ألف دينار." },
+  { q: "ما سبب إتقان الشعراء العباسيين لعلوم اللغة؟", a: "بسبب سيطرة اللغويين على سوق الشعر." },
+  { q: "كيف تطور النقد الأدبي في هذا العصر؟ وما أثره على الشعراء؟", a: "اتسع آفاق النقد الأدبي؛ حيث خرج عن دائرة النقد التأثري الانفعالي إلى المنهجية العلمية." },
+  { q: "اذكر ثلاثة عوامل أخرى أدت إلى ازدهار الشعر تتعلق بالثقافات الأخرى والتنافس.", a: "١ - تأثر الشعراء بالحياة العلمية المزدهرة؛ نتيجة لنشاط حركة الترجمة.\n٢ - الامتزاج القوي بين العرب وغيرهم.\n٣ - التنافس بين أمراء المنطقة في اجتذاب الشعراء إلى بلاطهم." },
+  { q: "علل كثرة المدح كثرة مفرطة في العصر العباسي، ومن أبرز شعرائه؟", a: "كثر المدح كثرة مفرطة طمعاً في نوال الخلفاء، ومن أهم شعراء المدح مروان بن أبي حفصة." },
+  { q: "ما الفرق بين معاني المدح قديماً وعند العباسيين؟", a: "- قديماً: كان يدور حول معاني العفة والشجاعة والكرم وغيرها.\n- العباسيون: زادوا في المدح معاني جديدة كالحفاظ على الدين والتقوى والورع وإحياء السنة." },
+  { q: "كيف طور الشعراء العباسيون غرض الرثاء؟ ومن أشهر شعرائه؟", a: "لم يقتصروا على مجرد تعداد صفات المرثي، بل أضافوا تمجيد الشهادة والبطولة، ورثاء المدن والحيوانات الأليفة والممتلكات الشخصية، ومن أشهرهم أبو تمام." },
+  { q: "ما سبب كثرة الغزل في العصر العباسي؟ وما هما تياراه وأشهر شعرائه؟", a: "كثر الغزل بسبب انتشار الغناء والجواري والغلمان، وبقي في الغزل التياران العفيف والفاحش، ومن أشهر شعرائه عباس بن الأحنف." },
+  { q: "ما هي مظاهر انتشار الخمريات في الشعر العباسي؟ ومن أبرز شعرائه؟", a: "انتشر شرب الخمر وكانت هناك دور تدار فيها الكؤوس دون محاسبة من الخلفاء، وحول بعضهم دار الخلافة إلى حانة. أبرز شعرائه: أبو نواس - والبة بن الحباب - مطيع بن إياس." },
+  { q: "ما تعريف الزهد عباسيّاً؟ ولماذا ظهر؟ ومن أشهر شعرائه؟", a: "هو ترك متاع الدنيا الزائل والتفكير في نعيم الآخرة الباقي (النظر إلى الدنيا بعين زوال)، وظهر كونه يقابل صفة المجون والزندقة وامتلأت المساجد بالوعاظ والنساك والمحدثين، وأشهرهم مالك بن دينار." },
+  { q: "ما هو الشعر التعليمي؟ وبمن اشتهر غرض الزهد والحكمة؟", a: "الشعر التعليمي فن استحدثه العباسيون، صاغوا فيه بعض العلوم والمعارف القديمة في ثوب شعري، واشتهر أبو العتاهية بشاعر الزهد والحكمة." },
+  { q: "اذكر أشهر شعراء الهجاء العباسيين، وما هي مستويات ومظاهر هذا الغرض لديهم؟", a: "أشهرهم: بشار بن برد - حماد عجرد - دعبل الخزاعي - ابن الرومي.\n- كان أداة للتقارع بين الخصوم.\n- انحدر بعضهم إلى حضيض الفحش وهتك الأعراض.\n- وقف بعضهم عند حد السخرية." },
+  { q: "ما سبب انتشار الشعر السياسي في العصر العباسي؟ وكيف تصرف الشعراء تجاهه؟", a: "انتشر بسبب الصراع بين العلويين والعباسيين حول الأحق بالخلافة، ومال عدد كبير من الشعراء إلى العباسيين طمعاً في عطاياهم حيث رددوا أحقيتهم بالخلافة." },
+  { q: "ما هي خصائص الشعر العباسي من حيث 'الفنون والأغراض'؟", a: "١ - استمرت الموضوعات التقليدية مثل المدح والهجاء والرثاء لأنها لصيقة بالإنسان.\n٢ - تطورت المعاني التي يعالجها الشعراء في الموضوعات التقليدية.\n٣ - ظهرت موضوعات جديدة.\n٤ - استجابة كثير من الشعراء إلى الوحدة الموضوعية." },
+  { q: "ما هي الأغراض الأربعة الجديدة التي ظهرت في الشعر العباسي وما سبب كل منها؟", a: "- الغزل بالمذكر: بسبب كثرة الغلمان في قصور الوجهاء.\n- رثاء المدن: بسبب خراب بعضها في أزمنة الفتن والكوارث الطبيعية.\n- الشعر الصوفي (الزهد): بسبب كونه رد فعل لشعر الخلاعة والزندقة.\n- نظم العلوم والفنون: بسبب الحاجة إلى تعلم الناشئة مبادئ العلوم والفنون." },
+  { q: "ما هي خصائص الشعر العباسي من حيث 'الألفاظ والأساليب'؟", a: "١ - اتجهت الألفاظ إلى السهولة وتبرأ الشعراء من التعقيد والغرابة.\n٢ - دخلت كثير من الألفاظ الفارسية والرومية الشعر العربي.\n٣ - بدأت فنون البديع تغزو لغة الشعر شيئاً فشيئاً حتى تحولت القصيدة بنهايته لمعرض لألوان البديع.\n٤ - دخلت مصطلحات العلوم والفنون وبخاصة مصطلحات المنطق والفلسفة." },
+  { q: "ما هي خصائص الشعر العباسي من حيث 'المعاني والأخيلة والأداء'؟", a: "١ - اتجه الشعراء إلى تعميق المعاني والمبالغة للوصول لمعنى لم يسبق إليه أحد.\n٢ - اهتم الشعراء بالتدليل المنطقي على المعاني الغريبة ليتحول الشك إلى يقين وقبول.\n٣ - كثرت الاستعارات الغريبة.\n٤ - التأثر بالمعجم القرآني في الأداء الشعري." }
+];
+
+    let currentCardIndex = 0;
+    let masteredCards = new Set(); 
+
+    window.onload = function() {
+      renderCard();
+    };
+
+    function renderCard() {
+      const total = flashcards.length;
+      const progressPercent = total > 1 ? Math.round((currentCardIndex / (total - 1)) * 100) : 0;
+      
+      document.getElementById("progressPercentage").innerText = `التقدم الفعلي: ${progressPercent}%`;
+      document.getElementById("cardProgress").innerText = `البطاقة ${currentCardIndex + 1} من ${total}`;
+      document.getElementById("progressBarFill").style.width = `${progressPercent}%`;
+      document.getElementById("masteredCount").innerText = `عرفتها: ${masteredCards.size}`;
+
+      document.getElementById("questionDisplay").innerText = flashcards[currentCardIndex].q;
+      document.getElementById("answerDisplay").innerText = flashcards[currentCardIndex].a;
+
+      document.getElementById("prevCardBtn").disabled = (currentCardIndex === 0);
+      document.getElementById("nextCardBtn").disabled = (currentCardIndex === total - 1);
+    }
+
+    function toggleCardFlip() {
+      const card = document.getElementById("flashcardElement");
+      card.classList.toggle("flipped");
+      
+      const assessRow = document.getElementById("assessmentRow");
+      if (card.classList.contains("flipped")) {
+        assessRow.style.visibility = "visible";
+      } else {
+        assessRow.style.visibility = "hidden";
+      }
+    }
+
+    function resetCardFlip() {
+      document.getElementById("flashcardElement").classList.remove("flipped");
+      document.getElementById("assessmentRow").style.visibility = "hidden";
+    }
+
+    function changeCard(direction) {
+      const targetIndex = currentCardIndex + direction;
+      if (targetIndex >= 0 && targetIndex < flashcards.length) {
+        resetCardFlip();
+        setTimeout(() => {
+          currentCardIndex = targetIndex;
+          renderCard();
+        }, 180);
+      }
+    }
+
+    function markCard(isMastered) {
+      if (isMastered) {
+        masteredCards.add(currentCardIndex);
+      } else {
+        masteredCards.delete(currentCardIndex);
+      }
+      
+      if (currentCardIndex < flashcards.length - 1) {
+        changeCard(1);
+      } else {
+        document.getElementById("finalScoreText").innerText = `البطاقات التي عرفتها بشكل متقن: ${masteredCards.size} من أصل ${flashcards.length}`;
+        document.getElementById("celebrationOverlay").classList.add("active");
+      }
+    }
+
+    function shuffleCards() {
+      resetCardFlip();
+      setTimeout(() => {
+        for (let i = flashcards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+        }
+        currentCardIndex = 0;
+        masteredCards.clear();
+        renderCard();
+        alert("تم إعادة ترتيب البطاقات عشوائياً.");
+      }, 200);
+    }
+
+    function restartDeck() {
+      document.getElementById("celebrationOverlay").classList.remove("active");
+      currentCardIndex = 0;
+      masteredCards.clear();
+      resetCardFlip();
+      renderCard();
+    }
+
+    window.addEventListener("keydown", function(e) {
+      if (e.code === "Space") {
+        e.preventDefault(); 
+        toggleCardFlip();
+      } else if (e.key === "ArrowRight") {
+        changeCard(-1); 
+      } else if (e.key === "ArrowLeft") {
+        changeCard(1);  
+      }
+    });
+  </script>
+</body>
+</html>
