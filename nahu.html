@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" direction="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نحو فلاش - كفيف</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta property="og:image" content="11.png" />
+  <link rel="icon" type="image/png" href="11.png"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Lateef&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1b4332;
+      --primary-light: #2d6a4f;
+      --accent-color: #d4a373;
+      --accent-hover: #c39262;
+      --bg-gradient: linear-gradient(135deg, #e6f7d3 0%, #ecfadc 100%);
+      --card-front-bg: #ffffff;
+      --card-back-bg: #e8f5e9;
+      --text-dark: #132a13;
+      --success-color: #52b788;
+      --danger-color: #e91f30;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Lateef', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      direction: rtl;
+      color: var(--text-dark);
+    }
+    
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 5px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    h1 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 44px;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.03);
+      margin-bottom: 5px;
+    }
+
+    .dashboard {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 15px 20px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .thafaas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      color: var(--primary-light);
+    }
+
+    .dharaja {
+      display: flex;
+      gap: 12px;
+    }
+
+    .score-badge {
+      padding: 2px 10px;
+      border-radius: 12px;
+      color: white;
+      font-size: 21px;
+    }
+    .score-badge.mastered { background-color: var(--success-color); }
+    .score-badge.review { background-color: #afbda9; color: var(--text-dark); }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--success-color), var(--primary-light));
+      border-radius: 10px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard-wrapper {
+      perspective: 1200px;
+      width: 100%;
+      height: 380px;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 28px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(27, 67, 50, 0.06);
+      border: 2px solid rgba(255,255,255,0.8);
+      overflow-y: auto;
+    }
+
+    .flashcard-wrapper:hover .card-side {
+      box-shadow: 0 25px 50px rgba(27, 67, 50, 0.15);
+    }
+
+    .side-front {
+      background: var(--card-front-bg);
+      color: var(--primary-color);
+    }
+
+    .side-back {
+      background: var(--card-back-bg);
+      color: var(--text-dark);
+      transform: rotateY(180deg);
+      border: 2px dashed var(--primary-light);
+    }
+
+    .side-hint {
+      font-size: 12px;
+      position: absolute;
+      top: 20px;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 4px 14px;
+      border-radius: 30px;
+      color: #555;
+    }
+
+    .card-text {
+      font-size: 28px;
+      line-height: 1.6;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .assessment-row {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .assess-btn {
+      flex: 1;
+      font-family: 'Lateef', sans-serif;
+      font-size: 20px;
+      border: none;
+      padding: 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .assess-btn.know { background-color: var(--success-color); }
+    .assess-btn.know:hover { background-color: #40a073; }
+    .assess-btn.dont-know { background-color: var(--danger-color); }
+    .assess-btn.dont-know:hover { background-color: #d62839; }
+
+    .controls-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .main-controls {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .game-btn {
+      font-family: 'Lateef', sans-serif;
+      font-size: 24px;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.03);
+    }
+
+    .btn-nav {
+      background-color: var(--primary-color);
+      color: white;
+      flex: 2;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background-color: var(--primary-light);
+    }
+
+    .btn-flip {
+      background-color: var(--accent-color);
+      color: white;
+      flex: 3;
+    }
+    .btn-flip:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-utility {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: var(--text-dark);
+      border: 1px solid rgba(0,0,0,0.06);
+      width: 100%;
+      font-size: 22px;
+    }
+    .btn-utility:hover {
+      background-color: #ffffff;
+      color: var(--primary-light);
+    }
+
+    .game-btn:disabled {
+      background-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .celebration-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(27, 67, 50, 0.95);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .celebration-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .celebration-box {
+      background: white;
+      color: var(--text-dark);
+      padding: 40px 30px;
+      border-radius: 28px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      transform: scale(0.8);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .celebration-overlay.active .celebration-box {
+      transform: scale(1);
+    }
+    .celebration-title {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 45px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .footer {
+      font-family: 'Aref Ruqaa', serif;
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px 0;
+      font-size: 20px;
+      color: #2f4931;
+      opacity: 0.7;
+      border-top: 1px solid #ccc;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .flashcard-wrapper { height: 340px; }
+      .card-text { font-size: 20px; }
+      .main-controls { flex-direction: column; }
+      .game-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div class="header">
+      <h1>نحو</h1>
+    </div>
+
+    <div class="dashboard">
+      <div class="thafaas">
+        <div id="progressPercentage">التقدم الفعلي: 0%</div>
+        <div class="dharaja">
+          <span class="score-badge mastered" id="masteredCount">عرفتها: 0</span>
+          <span class="score-badge review" id="cardProgress">البطاقة 0 من 0</span>
+        </div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+    </div>
+
+    <div class="flashcard-wrapper" onclick="toggleCardFlip()">
+      <div class="flashcard" id="flashcardElement">
+        <div class="card-side side-front">
+          <span class="side-hint">السؤال</span>
+          <div class="card-text" id="questionDisplay">جاري التحميل...</div>
+        </div>
+        <div class="card-side side-back">
+          <span class="side-hint">الإجابة</span>
+          <div class="card-text" id="answerDisplay">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assessment-row" id="assessmentRow" style="visibility: hidden;">
+      <button class="assess-btn know" onclick="markCard(true)">عرفت الإجابة</button>
+      <button class="assess-btn dont-know" onclick="markCard(false)">أحتاج لمراجعتها</button>
+    </div>
+
+    <div class="controls-container">
+      <div class="main-controls">
+        <button class="game-btn btn-nav" id="prevCardBtn" onclick="event.stopPropagation(); changeCard(-1)">السابقة</button>
+        <button class="game-btn btn-flip" id="flipCardBtn" onclick="event.stopPropagation(); toggleCardFlip();">قلب</button>
+        <button class="game-btn btn-nav" id="nextCardBtn" onclick="event.stopPropagation(); changeCard(1)">التالية</button>
+      </div>
+      
+      <button style="background-color: rgb(241, 45, 45); color: #ffffff;" class="game-btn btn-utility" onclick="event.stopPropagation(); shuffleCards()">خلط البطاقات عشوائياً</button>
+    </div>
+
+    <footer class="footer">
+      حقوق الطبع والنشر محفوظة لأصحابها الشرعيين
+    </footer>
+
+  </div>
+
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-box">
+      <div class="celebration-title">صفق نفسك! (بالسبابتان)</div>
+      <p style="font-size: 20px; margin-bottom: 20px; line-height: 1.6;">بسم الله ماشاءالله! ما هذه الاجابات الجميالة. لا أحد يستطيع أن يكون مثلك</p>
+      <div style="background: #f4fbf4; padding: 15px; border-radius: 16px; margin-bottom: 25px; color: var(--primary-color);" id="finalScoreText">
+        البطاقات التي عرفتها: 0 من 0
+      </div>
+      <button class="game-btn btn-flip" style="width:100%;" onclick="restartDeck()">إعادة المذاكرة من جديد</button>
+    </div>
+  </div>
+
+  <script>
+let flashcards = [
+  { q: "ما هو تعريف الفاعل في النحو؟", a: "هو الاسم المسند إليه فعل على طريقة (فَعَلَ) أو ما يشبهه." },
+  { q: "ما هو الحكم الإعرابي الثابت للفاعل؟", a: "الحكم الإعرابي للفاعل هو الرفع دائماً." },
+  { q: "ما حكم تقديم الفاعل على رافعه (الفعل)؟", a: "حكمه وجوب التأخر عن رافعه، ولا يجوز تقديمه عليه مطلقاً." },
+  { q: "ماذا يُعرب الاسم إذا تقدّم على الفعل؟", a: "يُعرب الاسم في هذه الحالة مبتدأً، وتكون الجملة الفعلية بعده في محل رفع خبر." },
+  { q: "ما حكم اقتران الفعل بعلامتي التثنية والجمع إذا كان الفاعل مثنى أو جمعاً؟", a: "لا يجوز أن يُثنى الفعل أو يُجمع، بل يلزم حالة الإفراد دائماً." },
+  { q: "ما هي أوجه إعراب ما ظاهره تثنية الفعل وجمعه في كلام العرب مثل حديث (يتعاقبون فيكم ملائكة)؟", a: "١ - أن يكون الاسم المؤخر مبتدأً، والفعل والفاعل قبله خبر مقدم.\n٢ - أن يكون الاسم المؤخر بدلاً من الضمير المتصل بالفعل." },
+  { q: "متى يُحذف الفعل مع الفاعل جوازاً؟ مع التمثيل.", a: "يُحذف جوازاً إذا دلّ عليه دليل.\nمثل: أن يقال من يقرأ؟ فتقول محمد." },
+  { q: "متى يُحذف الفعل وجوباً؟ وما إعراب الاسم المرفوع بعد هذه الأدوات؟", a: "يُحذف وجوباً بعد (إن) و(إذا) الشرطيتين.\nويُعرب الاسم المرفوع بعدها فاعلاً لفعل محذوف وجوباً." },
+  { q: "ما الذي يلحق الفعل الماضي إذا أُسند إلى فاعل مؤنث؟", a: "تلحقه تاء التأنيث الساكنة في آخره، ولا فرق في ذلك بين المؤنث الحقيقي والمجازي." },
+  { q: "ما هي مواضع وجوب تأنيث الفعل مع الفاعل المؤنث؟", a: "١ - إذا أُسند الفعل إلى ضمير مستتر يعود على مؤنث حقيقي أو مجازي.\n٢ - إذا كان الفاعل اسماً ظاهراً حقيقي التأنيث متصلاً بالفعل مباشرة." },
+  { q: "ما هي مواضع جواز تأنيث وتذكير الفعل مع الفاعل المؤنث؟", a: "١ - مع المؤنث الظاهر مجازي التأنيث.\n٢ - مع جمع التكسير للمذكر أو المؤنث.\n٣ - مع جمع المؤنث السالم." },
+  { q: "ما هو الأصل في ترتيب الجملة الفعلية من حيث الفاعل والمفعول به؟", a: "الأصل أن يلي الفاعلُ الفعلَ مباشرة، والأصل في المفعول به أن يأتي بعد الفاعل." },
+  { q: "ما هي مواضع وجوب تقديم المفعول به على الفعل؟", a: "١ - إذا كان المفعول به اسم شرط.\n٢ - إذا كان المفعول به اسم استفهام.\n٣ - إذا كان المفعول به ضميراً منفصلاً لو تأخر لزم اتصاله." },
+  { q: "متى يجب تقديم الفاعل على المفعول به؟", a: "يجب تقديم الفاعل إذا خيف اللبس وحدث شك بسبب خفاء علامات الإعراب وعدم وجود قرينة." },
+  { q: "متى يجوز التقديم والتأخير بين الفاعل والمفعول به عند خفاء الإعراب؟", a: "يجوز التقديم والتأخير إذا وجدت علامة أو قرينة واضحة تبيّن الفاعل من المفعول به." },
+  { q: "ما الذي يحدث عند حذف الفاعل؟ وما الأحكام التي يكتسبها نائب الفاعل؟", a: "يُحذف الفاعل ويقام المفعول به مقامه.\nويكتسب أحكام الفاعل وهي: لزوم الرفع، ووجوب التأخر عن رافعه، وعدم جواز حذفه." },
+  { q: "كيف يُصاغ الفعل المبني للمجهول من الماضي والمضارع؟", a: "- من الماضي: يُضم أوله ويُكسر ما قبل آخره.\n- من المضارع: يُضم أوله ويُفتح ما قبل آخره." },
+  { q: "كيف يُصاغ الفعل المبني للمجهول إذا كان مبدوءاً بتاء زائدة أو همزة وصل؟", a: "- المبدوء بتاء زائدة: يُضم أوله وثانيه.\n- المبدوء بهمزة وصل: يُضم أوله وثالثه." },
+  { q: "ما هو تعريف الاستثناء في النحو؟", a: "هو إخراج الاسم الواقع بعد أداة الاستثناء من حكم ما قبله." },
+  { q: "ما هي أركان الاستثناء الثلاثة؟", a: "١ - المستثنى منه (يقع قبل الأداة).\n٢ - أداة الاستثناء.\n٣ - المستثنى (يقع بعد الأداة)." },
+  { q: "متى يجب نصب المستثنى بـ (إلا)؟ مع التمثيل.", a: "يججب نصبه إذا كانت الجملة تامة موجبة.\nمثل: حضر الطلاب إلا طالباً." },
+  { q: "ما حكم المستثنى بـ (إلا) إذا كانت الجملة تامة منفية؟ مع التمثيل.", a: "يجوز فيه وجهان: النصب على الاستثناء، أو الإتباع على البدلية.\nمثل: ما نجح الطلاب إلا طالباً / إلا طالبٌ." },
+  { q: "كيف يُعرب المستثنى بـ (إلا) إذا كانت الجملة ناقصة منفية؟", a: "يُعرب حسب موقعه في الجملة كأن أداة الاستثناء غير موجودة." },
+  { q: "كيف تُعرب أداتا الاستثناء (غير وسوى)؟", a: "تُعربان بنفس إعراب المستثنى الواقع بعد (إلا) بحسب أحوال الجملة الثلاثة، وتُعرب سوى بحركات مقدرة." },
+  { q: "ما هو الحكم الإعرابي الثابت للاسم الواقع بعد (غير وسوى)؟", a: "يكون الاسم الواقع بعدهما واجب الجر بالإضافة (مضاف إليه) دائماً." },
+  { q: "ما حكم الاستثناء بعد الأفعال (ليس ولا يكون)؟ وما وضع اسمها؟", a: "يجب نصب المستثنى بعدهما على أنه خبرها.\nأما اسمها فيكون ضميراً مستتراً وجوباً." },
+  { q: "ما حكم المستثنى بـ (خلا، عدا، حاشا) إذا لم تسبقها ما المصدرية؟", a: "يجوز فيه وجهان:\n١ - الجر: على اعتبار أنها حروف جر.\n٢ - النصب: على اعتبار أنها أفعال ماضية والفاعل مستتر." },
+  { q: "ما حكم دخول ما المصدرية على (خلا وأخواتها)؟ وما حكم المستثنى بعدها؟", a: "إذا دخلت ما يتعين أن تكون أفعالاً فقط ولا يجوز أن تكون حروف جر.\nولذلك يجب نصب المستثنى بعدها على أنه مفعول به." },
+  { q: "ما هو تعريف الحال في النحو؟ وما هو أصلها وأصل صاحبها؟", a: "الحال: وصف فضلة منصوب يأتي للدلالة على هيئة صاحب الحال.\nالأصل فيها أن تكون نكرة، والأصل في صاحبها أن يكون معرفة." },
+  { q: "هل تأتي الحال جملة؟ وما شرطها؟", a: "نعم، تأتي جملة اسمية أو فعلية، ولا بد لها من رابط (كالواو أو الضمير أو كلاهما) يربطها بالصاحب." },
+  { q: "هل تأتي الحال شبه جملة؟ وما حكمها من حيث الرابط؟", a: "نعم، تأتي شبه جملة (ظرف أو جار ومجرور) وتكون في محل نصب.\nولا تحتاج شبه الجملة إلى رابط مطلقاً." },
+  { q: "ما هي شروط مجيء صاحب الحال نكرة؟", a: "١ - أن يتقدم الحال على صاحبها النكرة.\n٢ - أن يُخصّص صاحب الحال بوصف أو إضافة.\n٣ - أن تكون الجملة منفية أو مسبوقة بنفي." },
+  { q: "ما هي أقسام الحال المؤكدة؟ مع التمثيل.", a: "١ - مؤكدة للعامل: مثل (وأرسلناك للناس رسولاً).\n٢ - مؤكدة لمضمون الجملة: مثل (أنا زيد معروفاً)." },
+  { q: "ما حكم تعدد الحال لصاحبها؟", a: "يجوز تعدد الحال سواء كان صاحبها مفرداً أو متعدداً." },
+  { q: "ما العمل إذا تعددت الحال لصاحب متعدد ولم يُعلم أي الحالين لأي الصاحبين؟", a: "عند خفاء اللبس، تُجعل الحال الأولى للاسم الثاني، وتُجعل الحال الثانية للاسم الأول." },
+  { q: "ما حكم حذف عامل الحال؟ مع التمثيل.", a: "- جوازاً: إذا دلّ عليه دليل (مثل جواب راكباً لمن سألك كيف جئت؟).\n- وجوباً: مع الحال المؤكدة لمضمون الجملة." }
+];
+
+    let currentCardIndex = 0;
+    let masteredCards = new Set(); 
+
+    window.onload = function() {
+      renderCard();
+    };
+
+    function renderCard() {
+      const total = flashcards.length;
+      const progressPercent = total > 1 ? Math.round((currentCardIndex / (total - 1)) * 100) : 0;
+      
+      document.getElementById("progressPercentage").innerText = `التقدم الفعلي: ${progressPercent}%`;
+      document.getElementById("cardProgress").innerText = `البطاقة ${currentCardIndex + 1} من ${total}`;
+      document.getElementById("progressBarFill").style.width = `${progressPercent}%`;
+      document.getElementById("masteredCount").innerText = `عرفتها: ${masteredCards.size}`;
+
+      document.getElementById("questionDisplay").innerText = flashcards[currentCardIndex].q;
+      document.getElementById("answerDisplay").innerText = flashcards[currentCardIndex].a;
+
+      document.getElementById("prevCardBtn").disabled = (currentCardIndex === 0);
+      document.getElementById("nextCardBtn").disabled = (currentCardIndex === total - 1);
+    }
+
+    function toggleCardFlip() {
+      const card = document.getElementById("flashcardElement");
+      card.classList.toggle("flipped");
+      
+      const assessRow = document.getElementById("assessmentRow");
+      if (card.classList.contains("flipped")) {
+        assessRow.style.visibility = "visible";
+      } else {
+        assessRow.style.visibility = "hidden";
+      }
+    }
+
+    function resetCardFlip() {
+      document.getElementById("flashcardElement").classList.remove("flipped");
+      document.getElementById("assessmentRow").style.visibility = "hidden";
+    }
+
+    function changeCard(direction) {
+      const targetIndex = currentCardIndex + direction;
+      if (targetIndex >= 0 && targetIndex < flashcards.length) {
+        resetCardFlip();
+        setTimeout(() => {
+          currentCardIndex = targetIndex;
+          renderCard();
+        }, 180);
+      }
+    }
+
+    function markCard(isMastered) {
+      if (isMastered) {
+        masteredCards.add(currentCardIndex);
+      } else {
+        masteredCards.delete(currentCardIndex);
+      }
+      
+      if (currentCardIndex < flashcards.length - 1) {
+        changeCard(1);
+      } else {
+        document.getElementById("finalScoreText").innerText = `البطاقات التي عرفتها بشكل متقن: ${masteredCards.size} من أصل ${flashcards.length}`;
+        document.getElementById("celebrationOverlay").classList.add("active");
+      }
+    }
+
+    function shuffleCards() {
+      resetCardFlip();
+      setTimeout(() => {
+        for (let i = flashcards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+        }
+        currentCardIndex = 0;
+        masteredCards.clear();
+        renderCard();
+        alert("تم إعادة ترتيب البطاقات عشوائياً.");
+      }, 200);
+    }
+
+    function restartDeck() {
+      document.getElementById("celebrationOverlay").classList.remove("active");
+      currentCardIndex = 0;
+      masteredCards.clear();
+      resetCardFlip();
+      renderCard();
+    }
+
+    window.addEventListener("keydown", function(e) {
+      if (e.code === "Space") {
+        e.preventDefault(); 
+        toggleCardFlip();
+      } else if (e.key === "ArrowRight") {
+        changeCard(-1); 
+      } else if (e.key === "ArrowLeft") {
+        changeCard(1);  
+      }
+    });
+  </script>
+</body>
+</html>
