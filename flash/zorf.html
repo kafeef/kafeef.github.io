@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ar" direction="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>صرف فلاش - كفيف</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta property="og:image" content="11.png" />
+  <link rel="icon" type="image/png" href="11.png"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Lateef&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-color: #1b4332;
+      --primary-light: #2d6a4f;
+      --accent-color: #d4a373;
+      --accent-hover: #c39262;
+      --bg-gradient: linear-gradient(135deg, #e6f7d3 0%, #ecfadc 100%);
+      --card-front-bg: #ffffff;
+      --card-back-bg: #e8f5e9;
+      --text-dark: #132a13;
+      --success-color: #52b788;
+      --danger-color: #e91f30;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Lateef', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      direction: rtl;
+      color: var(--text-dark);
+    }
+    
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 5px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    h1 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 44px;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.03);
+      margin-bottom: 5px;
+    }
+
+    .dashboard {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 15px 20px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .thafaas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      color: var(--primary-light);
+    }
+
+    .dharaja {
+      display: flex;
+      gap: 12px;
+    }
+
+    .score-badge {
+      padding: 2px 10px;
+      border-radius: 12px;
+      color: white;
+      font-size: 21px;
+    }
+    .score-badge.mastered { background-color: var(--success-color); }
+    .score-badge.review { background-color: #afbda9; color: var(--text-dark); }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--success-color), var(--primary-light));
+      border-radius: 10px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard-wrapper {
+      perspective: 1200px;
+      width: 100%;
+      height: 380px;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 28px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(27, 67, 50, 0.06);
+      border: 2px solid rgba(255,255,255,0.8);
+      overflow-y: auto;
+    }
+
+    .flashcard-wrapper:hover .card-side {
+      box-shadow: 0 25px 50px rgba(27, 67, 50, 0.15);
+    }
+
+    .side-front {
+      background: var(--card-front-bg);
+      color: var(--primary-color);
+    }
+
+    .side-back {
+      background: var(--card-back-bg);
+      color: var(--text-dark);
+      transform: rotateY(180deg);
+      border: 2px dashed var(--primary-light);
+    }
+
+    .side-hint {
+      font-size: 12px;
+      position: absolute;
+      top: 20px;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 4px 14px;
+      border-radius: 30px;
+      color: #555;
+    }
+
+    .card-text {
+      font-size: 28px;
+      line-height: 1.6;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .assessment-row {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .assess-btn {
+      flex: 1;
+      font-family: 'Lateef', sans-serif;
+      font-size: 20px;
+      border: none;
+      padding: 12px;
+      border-radius: 16px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .assess-btn.know { background-color: var(--success-color); }
+    .assess-btn.know:hover { background-color: #40a073; }
+    .assess-btn.dont-know { background-color: var(--danger-color); }
+    .assess-btn.dont-know:hover { background-color: #d62839; }
+
+    .controls-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .main-controls {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .game-btn {
+      font-family: 'Lateef', sans-serif;
+      font-size: 24px;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.03);
+    }
+
+    .btn-nav {
+      background-color: var(--primary-color);
+      color: white;
+      flex: 2;
+    }
+    .btn-nav:hover:not(:disabled) {
+      background-color: var(--primary-light);
+    }
+
+    .btn-flip {
+      background-color: var(--accent-color);
+      color: white;
+      flex: 3;
+    }
+    .btn-flip:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-utility {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: var(--text-dark);
+      border: 1px solid rgba(0,0,0,0.06);
+      width: 100%;
+      font-size: 22px;
+    }
+    .btn-utility:hover {
+      background-color: #ffffff;
+      color: var(--primary-light);
+    }
+
+    .game-btn:disabled {
+      background-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .celebration-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(27, 67, 50, 0.95);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .celebration-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .celebration-box {
+      background: white;
+      color: var(--text-dark);
+      padding: 40px 30px;
+      border-radius: 28px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      transform: scale(0.8);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .celebration-overlay.active .celebration-box {
+      transform: scale(1);
+    }
+    .celebration-title {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: 45px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .footer {
+      font-family: 'Aref Ruqaa', serif;
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px 0;
+      font-size: 20px;
+      color: #2f4931;
+      opacity: 0.7;
+      border-top: 1px solid #ccc;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 32px; }
+      .flashcard-wrapper { height: 340px; }
+      .card-text { font-size: 20px; }
+      .main-controls { flex-direction: column; }
+      .game-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <div class="header">
+      <h1>صرف</h1>
+    </div>
+
+    <div class="dashboard">
+      <div class="thafaas">
+        <div id="progressPercentage">التقدم الفعلي: 0%</div>
+        <div class="dharaja">
+          <span class="score-badge mastered" id="masteredCount">عرفتها: 0</span>
+          <span class="score-badge review" id="cardProgress">البطاقة 0 من 0</span>
+        </div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+    </div>
+
+    <div class="flashcard-wrapper" onclick="toggleCardFlip()">
+      <div class="flashcard" id="flashcardElement">
+        <div class="card-side side-front">
+          <span class="side-hint">السؤال</span>
+          <div class="card-text" id="questionDisplay">جاري التحميل...</div>
+        </div>
+        <div class="card-side side-back">
+          <span class="side-hint">الإجابة</span>
+          <div class="card-text" id="answerDisplay">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assessment-row" id="assessmentRow" style="visibility: hidden;">
+      <button class="assess-btn know" onclick="markCard(true)">عرفت الإجابة</button>
+      <button class="assess-btn dont-know" onclick="markCard(false)">أحتاج لمراجعتها</button>
+    </div>
+
+    <div class="controls-container">
+      <div class="main-controls">
+        <button class="game-btn btn-nav" id="prevCardBtn" onclick="event.stopPropagation(); changeCard(-1)">السابقة</button>
+        <button class="game-btn btn-flip" id="flipCardBtn" onclick="event.stopPropagation(); toggleCardFlip();">قلب</button>
+        <button class="game-btn btn-nav" id="nextCardBtn" onclick="event.stopPropagation(); changeCard(1)">التالية</button>
+      </div>
+      
+      <button style="background-color: rgb(241, 45, 45); color: #ffffff;" class="game-btn btn-utility" onclick="event.stopPropagation(); shuffleCards()">خلط البطاقات عشوائياً</button>
+    </div>
+
+    <footer class="footer">
+      حقوق الطبع والنشر محفوظة لأصحابها الشرعيين
+    </footer>
+
+  </div>
+
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-box">
+      <div class="celebration-title">صفق نفسك! (بالسبابتان)</div>
+      <p style="font-size: 20px; margin-bottom: 20px; line-height: 1.6;">بسم الله ماشاءالله! ما هذه الاجابات الجميالة. لا أحد يستطيع أن يكون مثلك</p>
+      <div style="background: #f4fbf4; padding: 15px; border-radius: 16px; margin-bottom: 25px; color: var(--primary-color);" id="finalScoreText">
+        البطاقات التي عرفتها: 0 من 0
+      </div>
+      <button class="game-btn btn-flip" style="width:100%;" onclick="restartDeck()">إعادة المذاكرة من جديد</button>
+    </div>
+  </div>
+
+  <script>
+let flashcards = [
+  { q: "ما هو الأصل في الأسماء، التذكير أم التأنيث؟ ولماذا؟", a: "الأصل هو التذكير، والتأنيث فرع عنه؛ لذلك لا يحتاج المذكر إلى علامة تأنيث." },
+  { q: "إلى ماذا تنقسم علامات التأنيث الظاهرة؟ وما أشهرها؟", a: "تنقسم إلى: التاء، الألف المقصورة، والألف الممدودة. وأشهرها التاء." },
+  { q: "ما هي علامة التأنيث المقدرة؟", a: "هي التاء فقط، وتكون غير ظاهرة في اللفظ." },
+  { q: "كيف يُستدل على تأنيث الاسم إذا كانت التاء مقدرة؟ (اذكر الأدلة الأربعة)", a: "1. عود الضمير إليه مؤنثاً.\n2. الإشارة إليه بما يشار به للمؤنث.\n3. وصفه بالمؤنث.\n4. ثبوت التاء في تصغيره." },
+  { q: "ما الغرض من إلحاق تاء التأنيث بالكلمات؟ وأين يكثر ذلك؟", a: "الغرض هو تمييز المؤنث عن المذكر، ويكثر ذلك في الصفات لا الأسماء الجامدة." },
+  { q: "ما حكم الصفة التي على وزن (فَعِيل) بمعنى (مَفْعُول) واستعملت كاسم؟", a: "يجب إلحاق تاء التأنيث بها، مثل: نطيحة، ذبيحة." },
+  { q: "ما حكم الصفة التي على وزن (فَعِيل) بمعنى (فَاعِل) واستعملت كاسم؟", a: "يكثر إلحاق تاء التأنيث بها، مثل: كريمة، عظيمة، شريفة." },
+  { q: "ما حكم الصفة التي على وزن (فَعِيل) بمعنى (مَفْعُول) واستعملت كصفة لمؤنث؟", a: "يقل إلحاق تاء التأنيث بها، مثل: امرأة جريح، صريع، قتيل." },
+  { q: "ما حكم الصفة التي على وزن (فَعُول) بمعنى (مَفْعُول) واستعملت كاسم؟", a: "يجوز فيها إلحاق التاء وعدم إلحاقها دون ترجيح، مثل: حلوب وحلوبة، ركوب وركوبة." },
+  { q: "ما هي الأوزان الأربعة التي يمتنع إلحاق تاء التأنيث بها؟", a: "الأوزان هي: مِفْعَل، مِفْعَال، مِفْعِيل، وفَعُول (بمعنى فاعل مثل صبور وشكور)." },
+  { q: "اذكر الأوزان (فُعْلَى، فَعْلَى، فَعَلَى، فُعَلَى) للمقصورة مع مثال لكل منها.", a: "* فُعْلَى: حبلى.\n* فَعْلَى: جرحى.\n* فَعَلَى: بردى.\n* فُعَلَى: أربى." },
+  { q: "اذكر الأوزان (فُعَالَى، فُعَّلَى., فِعَلَّى، فِعِّيلَى) للمقصورة مع مثال لكل منها.", a: "* فُعَالَى: حبارى.\n* فُعَّلَى: هوَّهى.\n* فِعَلَّى: سبطرى.\n* فِعِّيلَى: حثيثى." },
+  { q: "اذكر الأوزان (فِعْلَى، فُعُلَّى، فُعَّيْلَى، فُعَّالَى) للمقصورة مع مثال لكل منها.", a: "* فِعْلَى: ذكرى.\n* فُعُلَّى: حُذُرَّى.\n* فُعَّيْلَى: لغيزى.\n* فُعَّالَى: خبازى." },
+  { q: "اذكر الأوزان (فَعْلَاء، أَفْعِلَاء، فَعْلَلَاء، فُعُلَّاء) للممدودة مع مثال لكل منها.", a: "* فَعْلَاء: صحراء.\n* أَفْعِلَاء: أربعاء.\n* فَعْلَلَاء: عقرباء.\n* فُعُلَّاء: قرفصاء." },
+  { q: "اذكر الأوزان (فَاعُولَاء، فَاعِلَاء، فِعْلِيَاء، مَفْعُولَاء) للممدودة مع مثال لكل منها.", a: "* فَاعُولَاء: عاشوراء.\n* فَاعِلَاء: قاصعاء.\n* فِعْلِيَاء: كبرياء.\n* مَفْعُولَاء: مشيوخاء." },
+  { q: "اذكر الأوزان (فِعَالاء، فُنْعُلَاء، فَعِيلَاء، فُعَيْلَاء) للممدودة مع مثال لكل منها.", a: "* فِعَالاء: قصاصاء.\n* فُنْعُلَاء: خنفساء.\n* فَعِيلَاء: قريثاء.\n* فُعَيْلَاء: خيلى." },
+  { q: "ما هو الاسم الصحيح؟ مع مثال.", a: "هو كل اسم معرب آخره حرف صحيح، مثل: محمد، بيت." },
+  { q: "ما هو الاسم المنقوص؟ مع مثال.", a: "هو كل اسم معرب آخره ياء مكسور ما قبلها، مثل: قاضي، هادي." },
+  { q: "ما هو الاسم المقصور؟ مع مثال.", a: "هو كل اسم معرب آخره ألف مفتوح ما قبلها، مثل: ندى، دنيا." },
+  { q: "ما هو الاسم الممدود؟ مع مثال.", a: "هو كل اسم معرب آخره همزة قبلها ألف زائدة، مثل: صحراء، بناء." },
+  { q: "كيف يُثنى الاسم الصحيح ويُجمع جمعاً سالماً؟", a: "لا يحدث فيه أي تغيير، وتلحقه علامات التثنية أو الجمع مباشرة (طالب ← طالبان / مجتهد ← مجتهدون)." },
+  { q: "ما حكم ياء المنقوص عند التثنية؟", a: "إذا كانت موجودة تبقى (القاضي ← القاضيان)، وإذا كانت محذوفة تُرَدّ (قاضٍ ← قاضيان)." },
+  { q: "ما حكم ألف المقصور عند التثنية إذا كانت رابعة فصاعداً؟", a: "يجب قلبها ياءً دائماً، مثل: ملهى ← ملهيان، مستشفى ← مستشفيان." },
+  { q: "ما حكم ألف المقصور عند التثنية إذا كانت ثالثة؟", a: "تُرَدّ إلى أصلها الواو أو الياء (رضا ← رضوان / هدى ← هديان). وإن كانت أصلية وأُميلت تقلب ياءً (متى ← متيان)، وإن لم تُمَل تقلب واواً (ألا ← ألوان)." },
+  { q: "ما حكم همزة الممدود عند التثنية والجمع إذا كانت أصلية أو زائدة للتأنيث؟", a: "الأصلية تبقى كما هي (إنشاء ← إنشاءان)، والزائدة للتأنيث تقلب واواً (صحراء ← صحراوان / صحراوات)." },
+  { q: "ما حكم همزة الممدود عند التثنية والجمع إذا كانت منقلبة عن أصل؟ وما الأرجح؟", a: "جاز بقاؤها وجاز قلبها واواً، والأرجح هو بقاؤها (بناء ← بناءان أو بناوان)." },
+  { q: "كيف يُجمع الاسم المنقوص جمع مذكر سالماً؟", a: "تُحذف ياؤه، ويُضم ما قبل الواو في الرفع، ويُكسر ما قبل الياء في النصب والجر (القاضي ← القاضُون / القاضِيرن)." },
+  { q: "كيف يُجمع الاسم المقصور جمع مذكر سالماً؟ وما حركة الحرف قبل علامة الجمع؟", a: "تُحذف ألفه مطلقاً، ويجب فتح ما قبلها للدلالة عليها (المصطفى ← المصطفَون / المصطفَين)." },
+  { q: "ما الملاحظة الهامة عند جمع الاسم المقصور المختوم بتاء تأنيث جمع مؤنث سالماً؟", a: "ملاحظة: يجب حذف تاء التأنيث أولاً حتى لا تجتمع علامتا تأنيث في كلمة واحدة (فتاة ← فتيات)." },
+  { q: "ما هي الشروط الستة لاتباع حركة عين الاسم لحركة فائه عند جمعه جمع مؤنث سالماً؟", a: "أن يكون الاسم: اسماً، مؤنثاً، ثلاثياً، ساكن العين، غير معتلها، وغير مضعفها." },
+  { q: "ما حركة العين بعد الجمع للأوزان التالية: فَعْلَة، فِعْلَة، فُعْلَة؟", a: "* فَعْلَة ← تفتح العين (فَعَلَات) مثل دَعْدَات.\n* فِعْلَة ← تكسر العين (فِعِلَات) مثل هِنِدَات.\n* فُعْلَة ← تضم العين (فُعُلَات) مثل حُجُرَات." },
+  { q: "ما الأوجه الجائزة إذا كانت فاء الاسم الثلاثي المؤنث مكسورة أو مضمومة؟", a: "يجوز ثلاثة أوجه: الإتباع، أو فتح العين، أو تسكين العين (مثل: هِنِدَات، هِنَدَات، هِنْدَات)." },
+  { q: "متى يمتنع إتباع حركة العين للفاء في الجمع؟", a: "1. إذا كانت الفاء مضمومة واللام ياء (دُمْيَة).\n2. إذا كانت الفاء مكسورة واللام واو (رِشْوَة)." },
+  { q: "ما هو جمع التكسير؟ وكم عدد أوزانه المشهورة؟", a: "هو ما دل على ثلاثة فأكثر بتغيير صورة مفرده لفظاً أو تقديراً. وعدد أوزانه المشهورة 27 وزناً." },
+  { q: "اذكر أمثلة لصور التغيير اللفظي الثلاث في جمع التكسير.", a: "* تغيير بالشكل فقط: أَسَد ← أُسْد.\n* تغيير بالزيادة فقط: صِنْو ← صِنْوَان.\n* تغيير بالنقص فقط: تُخَمَة ← تُخَم." },
+  { q: "ما هو التغيير المقدر في جمع التكسير؟ مع مثال.", a: "هو ما استُعمل فيه اللفظ نفسه للمفرد والجمع دون تغيير ظاهري، مثل كلمة (فُلْك)." },
+  { q: "ما الفرق بين أبنية القلة وأبنية الكثرة من حيث العدد والدلالة؟", a: "أبنية القلة 4 أوزان وتدل على العدد من 3 إلى 10. أبنية الكثرة 23 وزناً وتدل على ما زاد على العشرة." },
+  { q: "ما هي أوزان أبنية القلة الأربعة؟ مع مثال لكل منها.", a: "1. أَفْعِلَة (أسلحة).\n2. أَفْعُل (أنفس).\n3. فِعْلَة (فتية).\n4. أَفْعَال (أجمال)." },
+  { q: "اذكر أوزان أبنية الكثرة الستة الواردة في الملف مع مثال لكل منها.", a: "1. فُعْل (حُمْر).\n2. فُعَل (غُرَف).\n3. فَعْلَى (قَتْلَى).\n4. فِعْلَان (غِلْمَان).\n5. فَعَائِل (رَسَائِل).\n6. فُعَلَاء (شُعَرَاء)." }
+];
+
+    let currentCardIndex = 0;
+    let masteredCards = new Set(); 
+
+    window.onload = function() {
+      renderCard();
+    };
+
+    function renderCard() {
+      const total = flashcards.length;
+      const progressPercent = total > 1 ? Math.round((currentCardIndex / (total - 1)) * 100) : 0;
+      
+      document.getElementById("progressPercentage").innerText = `التقدم الفعلي: ${progressPercent}%`;
+      document.getElementById("cardProgress").innerText = `البطاقة ${currentCardIndex + 1} من ${total}`;
+      document.getElementById("progressBarFill").style.width = `${progressPercent}%`;
+      document.getElementById("masteredCount").innerText = `عرفتها: ${masteredCards.size}`;
+
+      document.getElementById("questionDisplay").innerText = flashcards[currentCardIndex].q;
+      document.getElementById("answerDisplay").innerText = flashcards[currentCardIndex].a;
+
+      document.getElementById("prevCardBtn").disabled = (currentCardIndex === 0);
+      document.getElementById("nextCardBtn").disabled = (currentCardIndex === total - 1);
+    }
+
+    function toggleCardFlip() {
+      const card = document.getElementById("flashcardElement");
+      card.classList.toggle("flipped");
+      
+      const assessRow = document.getElementById("assessmentRow");
+      if (card.classList.contains("flipped")) {
+        assessRow.style.visibility = "visible";
+      } else {
+        assessRow.style.visibility = "hidden";
+      }
+    }
+
+    function resetCardFlip() {
+      document.getElementById("flashcardElement").classList.remove("flipped");
+      document.getElementById("assessmentRow").style.visibility = "hidden";
+    }
+
+    function changeCard(direction) {
+      const targetIndex = currentCardIndex + direction;
+      if (targetIndex >= 0 && targetIndex < flashcards.length) {
+        resetCardFlip();
+        setTimeout(() => {
+          currentCardIndex = targetIndex;
+          renderCard();
+        }, 180);
+      }
+    }
+
+    function markCard(isMastered) {
+      if (isMastered) {
+        masteredCards.add(currentCardIndex);
+      } else {
+        masteredCards.delete(currentCardIndex);
+      }
+      
+      if (currentCardIndex < flashcards.length - 1) {
+        changeCard(1);
+      } else {
+        document.getElementById("finalScoreText").innerText = `البطاقات التي عرفتها بشكل متقن: ${masteredCards.size} من أصل ${flashcards.length}`;
+        document.getElementById("celebrationOverlay").classList.add("active");
+      }
+    }
+
+    function shuffleCards() {
+      resetCardFlip();
+      setTimeout(() => {
+        for (let i = flashcards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+        }
+        currentCardIndex = 0;
+        masteredCards.clear();
+        renderCard();
+        alert("تم إعادة ترتيب البطاقات عشوائياً.");
+      }, 200);
+    }
+
+    function restartDeck() {
+      document.getElementById("celebrationOverlay").classList.remove("active");
+      currentCardIndex = 0;
+      masteredCards.clear();
+      resetCardFlip();
+      renderCard();
+    }
+
+    window.addEventListener("keydown", function(e) {
+      if (e.code === "Space") {
+        e.preventDefault(); 
+        toggleCardFlip();
+      } else if (e.key === "ArrowRight") {
+        changeCard(-1); 
+      } else if (e.key === "ArrowLeft") {
+        changeCard(1);  
+      }
+    });
+  </script>
+</body>
+</html>
