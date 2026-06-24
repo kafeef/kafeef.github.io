@@ -519,8 +519,11 @@
     <div class="card tafhad">
       <div class="text-preview">حديث</div>
       <div class="button-group">
-        <a href="/pdf/11_hadheesFAZNA_firstterm.pdf">
-          <button class="download-btn">
+        <a>
+          <button class="download-btn" onclick='openModal("حديث", [
+            { file: "pdf/11_hadheesFAZNA_firstterm.pdf", name: "حديث - فزنة" },
+            { file: "pdf/11_saudhhedhihadhees_firstterm.pdf", name: "حديث - د/ سعد بن حسن" },
+          ])'>
             <img src="icon/tafhadicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
@@ -529,8 +532,10 @@
     <div class="card tafhad">
       <div class="text-preview">تفسير</div>
       <div class="button-group">
-        <a href="/pdf/11_thafseerFAZNA_firstterm.pdf">
-          <button class="download-btn">
+        <a>
+          <button class="download-btn" onclick='openModal("تفسير", [
+            { file: "pdf/11_thafseerFAZNA_firstterm.pdf", name: "تقسير - فزنة" },
+          ])'>
             <img src="icon/tafhadicon.png" alt="Download" class="subjectimg">
           </button>
         </a>
