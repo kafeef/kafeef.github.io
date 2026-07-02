@@ -87,7 +87,7 @@
     }
     
     .card:hover {box-shadow: 0 30px 40px rgba(17,54,0,0.25);}
-
+    
     .card .text-preview {
       font-family: 'Lateef', serif;
       font-size: 24px;
@@ -95,6 +95,15 @@
       margin-bottom: 20px;
     }
 
+    /* Background classes for cards */
+    .timetable-bg {
+        background-image: url('icon/tableicont.png');
+        background-repeat: no-repeat;
+        background-position: right;
+        background-size: 40%;
+        background-position-x: 160px;
+        background-blend-mode: lighten;
+    }
     .nahu {
         background-image: url('icon/nahuicont.png');
         background-repeat: no-repeat;
@@ -207,54 +216,6 @@
         background-position-x: 160px;
         background-blend-mode: lighten;
     }
-    .thaareekh {
-        background-image: url('icon/thaareekhicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
-    .geography {
-        background-image: url('icon/geographyicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
-    .arool {
-        background-image: url('icon/aroolicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
-    .falsafa {
-        background-image: url('icon/falsafaicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
-    .manthiq {
-        background-image: url('icon/manthiqicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
-    .kuthub {
-        background-image: url('icon/kuthubicont.png');
-        background-repeat: no-repeat;
-        background-position: right;
-        background-size: 40%;
-        background-position-x: 160px;
-        background-blend-mode: lighten;
-    }
 
     .flash-btn {
       display: flex;
@@ -293,10 +254,62 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 16px;
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     }
     .download-btn img { width: 20px; height: 20px; }
     .download-btn:hover { background-color: #9fd4a3; transform: scale(1.05); }
+
+    /* Pastel Pink Glow & Animated Outline Button Class */
+    .attention-btn {
+      background-color: #ffb7b2;
+      box-shadow: 0 0 15px rgba(255, 183, 178, 0.6);
+      outline: 2px dashed #ffb7b2;
+      outline-offset: 4px;
+      animation: pulseOutline 2s infinite linear;
+    }
+
+    .attention-btn {
+      background-color: #ffb7b2;
+      box-shadow: 0 0 15px rgba(255, 183, 178, 0.6);
+      position: relative;
+      border: none;
+      /* We use a gradient outline trick for the continuous moving effect */
+      outline: 3px solid transparent;
+      background-image: linear-gradient(#ffb7b2, #ffb7b2), 
+                        linear-gradient(90deg, #ffb7b2, #ffffff, #ff9e99, #ffb7b2);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      background-size: 200% 100%;
+      animation: moveOutline 3s infinite linear, pulseGlow 2s infinite ease-in-out;
+    }
+
+    .attention-btn:hover {
+      background-color: #ffc6c2;
+      background-image: linear-gradient(#ffc6c2, #ffc6c2), 
+                        linear-gradient(90deg, #ffc6c2, #ffffff, #ff857f, #ffc6c2);
+    }
+
+    /* Animates the outline so it looks like light is travelling around the border */
+    @keyframes moveOutline {
+      0% {
+        background-position: 0% 0%, 0% 0%;
+      }
+      100% {
+        background-position: 0% 0%, -200% 0%;
+      }
+    }
+
+    /* Animates the soft pastel glow to breath in and out */
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 12px 2px rgba(255, 183, 178, 0.5);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 25px 6px rgba(255, 183, 178, 0.9);
+        transform: scale(1.04);
+      }
+    }
 
     .na { background-color: #caddc581; }
     .na:hover { background-color: #ff9999; transform: scale(1.05); }
@@ -356,6 +369,13 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       animation: modalFade 0.4s ease-out;
     }
+    .modal-content img.preview-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
     @keyframes modalFade { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .close { color: #535f46; float: left; font-size: 22px; font-weight: bold; cursor: pointer; transition: ease 0.3s;}
     .close:hover { color: #c01313; transform: rotate(90deg) scale(1.2);}
@@ -375,6 +395,17 @@
   </div>
 
   <div class="container">
+    <div class="card timetable-bg table">
+      <div class="text-preview">جدول الاختبارات</div>
+      <div class="button-group">
+        <a>
+          <button class="download-btn attention-btn" onclick='openImageModal("جدول الاختبارات", "2026_t1_testtimetable.png")'>
+            <img src="icon/tableicon.png" alt="View Schedule" class="subjectimg">
+          </button>
+        </a>
+      </div>
+    </div>
+    
     <div class="card nahu">
       <div class="text-preview">نحو</div>
       <div class="button-group">
@@ -570,71 +601,6 @@
         </a>
       </div>
     </div>
-<!-- ahabee maahdhaa thah furathama term ga nuliyeveythee reethikollan nufenna goi hadhaafa-->
-<!-- varah hadi maa shaa allah -->
-<!--    <div class="card thaareekh">
-      <div class="text-preview">تاريخ</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/thaareekhicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div>
-    <div class="card geography">
-      <div class="text-preview">جغرافيا</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/geographyicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div>
-    <div class="card arool">
-      <div class="text-preview">عروض</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/aroolicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div>
-    <div class="card falsafa">
-      <div class="text-preview">فلسفة</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/falsafaicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div>
-    <div class="card manthiq">
-      <div class="text-preview">منطق</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/manthiqicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div> -->
-
-    <!-- mives beykaaru ( fehi kollee )
-    <div class="card kuthub">
-      <div class="text-preview">كتب</div>
-      <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/kuthubicon.png" alt="Download" class="subjectimg">
-          </button>
-        </a>
-      </div>
-    </div>
-    -->
     
   </div>
 
@@ -652,6 +618,7 @@
     data-tally-auto-close="2000">
     اضغط هنا للإبلاغ عن خطأ في أي درس!
   </div>
+  
   <div id="downloadModal" class="modal" role="dialog" aria-hidden="true" aria-labelledby="modal-title">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&#128473;</span>
@@ -659,10 +626,8 @@
       <div class="download-list" id="downloadList"></div>
     </div>
   </div>
-
+  <!--
   <script type="module">
-    
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -690,15 +655,12 @@
         window.location.href = './login';
       }).catch(error => alert(error.message));
     });
-
-    
   </script>
-
+  -->
   <script>
     document.querySelectorAll('.card').forEach((card, i) => {
       card.style.animationDelay = `${0.15 * (i + 1)}s`;
     });
-
 
     function openModal(subject, lessons) {
       const modal = document.getElementById("downloadModal");
@@ -715,6 +677,19 @@
         btn.innerHTML = `<button class="download-option">${lesson.name}</button>`;
         list.appendChild(btn);
       });
+
+      modal.style.display = "block";
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    /* Unique modal handler to cleanly display image files */
+    function openImageModal(titleText, imgSrc) {
+      const modal = document.getElementById("downloadModal");
+      const title = document.getElementById("modal-title");
+      const list = document.getElementById("downloadList");
+
+      title.innerText = titleText;
+      list.innerHTML = `<img src="${imgSrc}" alt="${titleText}" class="preview-img">`;
 
       modal.style.display = "block";
       modal.setAttribute("aria-hidden", "false");
