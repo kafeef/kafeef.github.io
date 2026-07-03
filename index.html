@@ -386,6 +386,51 @@
     }
     .download-option:hover { background-color: #408345; }
     .button-group { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    
+    .modal-content.image-modal-content {
+      background-color: #beceac;
+      width: 90vw;
+      max-width: 95vw;
+      height: auto;
+      max-height: 90vh;
+      margin: 5vh auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+    
+    .modal-content.image-modal-content h3 {
+      font-family: 'Aref Ruqaa', serif;
+      font-size: clamp(20px, 4vw, 28px);
+      margin-bottom: 15px;
+      flex-shrink: 0;
+    }
+    
+    /* Container to handle responsive image sizing */
+    .image-container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 0; /* Prevents container from blowing past flex boundaries */
+    }
+    
+    .image-container img.preview-img {
+      max-width: 100%;
+      max-height: calc(90vh - 120px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+  
+    .image-modal-content .close {
+      line-height: 1;
+      margin-bottom: -10px;
+    }
   </style>
 </head>
 <body>
@@ -399,7 +444,7 @@
       <div class="text-preview">جدول الاختبارات</div>
       <div class="button-group">
         <a>
-          <button class="download-btn attention-btn" onclick='openImageModal("جدول الاختبارات", "2026_t1_testtimetable.png")'>
+          <button class="download-btn attention-btn" onclick='openImageModal("جدول الاختبارات", "2026_t1_testtimetable.jpg")'>
             <img src="icon/tableicon.png" alt="View Schedule" class="subjectimg">
           </button>
         </a>
@@ -680,23 +725,31 @@
       modal.setAttribute("aria-hidden", "false");
     }
 
-    /* Unique modal handler to cleanly display image files */
+    /* time table modal */
     function openImageModal(titleText, imgSrc) {
       const modal = document.getElementById("downloadModal");
+      const modalContent = modal.querySelector(".modal-content");
       const title = document.getElementById("modal-title");
       const list = document.getElementById("downloadList");
-
+    
+      modalContent.classList.add("image-modal-content");
+    
       title.innerText = titleText;
-      list.innerHTML = `<img src="${imgSrc}" alt="${titleText}" class="preview-img">`;
 
+      list.innerHTML = `<div class="image-container"><img src="${imgSrc}" alt="${titleText}" class="preview-img"></div>`;
+    
       modal.style.display = "block";
       modal.setAttribute("aria-hidden", "false");
     }
-
+    
     function closeModal() {
       const modal = document.getElementById("downloadModal");
+      const modalContent = modal.querySelector(".modal-content");
+      
       modal.style.display = "none";
       modal.setAttribute("aria-hidden", "true");
+      
+      modalContent.classList.remove("image-modal-content");
     }
 
     window.onclick = function(event) {
