@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Average Calculator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F9FAFB;
+            --surface: #FFFFFF;
+            --text: #111827;
+            --border: #D1D5DB;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--surface);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-secondary {
+            background-color: #10B981;
+            margin-top: 15px;
+        }
+        .btn-secondary:hover {
+            background-color: #059669;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .subject-group {
+            background-color: var(--bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+        .subject-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        .mark-row {
+            display: flex;
+            gap: 10px;
+        }
+        .mark-row > div {
+            flex: 1;
+        }
+        .sub-subject-label {
+            font-size: 0.85rem;
+            color: #4B5563;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        #resultContainer {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #ECFDF5;
+            border: 1px solid #10B981;
+            border-radius: 8px;
+            text-align: center;
+            color: #065F46;
+        }
+        #resultValue {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Permanent Off-Screen Sandbox for the PDF Template */
+        #pdfContainer {
+            position: absolute;
+            left: 5000px;
+            top: 0;
+            width: 750px;
+            display: block;
+        }
+        #pdfTemplate {
+            padding: 40px;
+            background: #FFFFFF !important;
+            color: #000000 !important;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        .pdf-header {
+            text-align: center;
+            border-bottom: 3px solid #4F46E5;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .pdf-header h2 {
+            margin: 0;
+            color: #4F46E5;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pdf-header p {
+            margin: 6px 0 0 0;
+            color: #4B5563;
+            font-size: 15px;
+        }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 12px;
+            background: #FFFFFF;
+        }
+        .pdf-table th, .pdf-table td {
+            border: 1px solid #9CA3AF;
+            padding: 12px 10px;
+            text-align: center;
+            color: #000000;
+        }
+        .pdf-table th {
+            background-color: #4F46E5 !important;
+            color: #FFFFFF !important;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+        .pdf-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+            padding-left: 15px;
+        }
+        .pdf-table tr:nth-child(even) {
+            background-color: #F9FAFB;
+        }
+        .pdf-summary {
+            margin-top: 30px;
+            border: 2px solid #4F46E5;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #F9FAFB;
+        }
+        .pdf-summary div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+        .pdf-summary div:last-child {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4F46E5;
+            margin-bottom: 0;
+            border-top: 2px dashed #D1D5DB;
+            padding-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Class Average Calculator</h1>
+    
+    <div id="setupSection">
+        <div class="form-group">
+            <label for="gradeSelect">Which grade are you in?</label>
+            <select id="gradeSelect" onchange="handleGradeChange()">
+                <option value="" disabled selected>Select Grade</option>
+                <option value="7">Grade 7</option>
+                <option value="8">Grade 8</option>
+                <option value="9">Grade 9</option>
+                <option value="10">Grade 10</option>
+                <option value="11">Grade 11</option>
+                <option value="12">Grade 12</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="streamGroup">
+            <label for="streamSelect">Which stream are you in?</label>
+            <select id="streamSelect">
+                <option value="" disabled selected>Select Stream</option>
+                <option value="ilmee">Ilmee</option>
+                <option value="adhabee">Adhabee</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="avgTypeSelect">What average do you want?</label>
+            <select id="avgTypeSelect">
+                <option value="" disabled selected>Select Type</option>
+                <option value="term">Term Average</option>
+                <option value="total">Total Aggregate</option>
+            </select>
+        </div>
+
+        <button onclick="generateSubjectFields()">Next</button>
+    </div>
+
+    <div id="marksSection" class="hidden">
+        <button onclick="goBack()" style="background-color: #6B7280; margin-bottom: 20px;">&larr; Back</button>
+        <div id="subjectsContainer"></div>
+        <button onclick="calculateAverage()">Calculate Average</button>
+    </div>
+
+    <div id="resultContainer" class="hidden">
+        <div>Your Calculated Average:</div>
+        <div id="resultValue">0%</div>
+        
+        <button onclick="downloadPDF()" class="btn-secondary">Shareable PDF</button>
+    </div>
+</div>
+
+<div id="pdfContainer">
+    <div id="pdfTemplate">
+        <div class="pdf-header">
+            <h2>Average Calculator</h2>
+            <p id="pdfSubtitle">kafeef.github.io</p>
+        </div>
+        
+        <table class="pdf-table">
+            <thead id="pdfThead"></thead>
+            <tbody id="pdfTbody"></tbody>
+        </table>
+
+        <div class="pdf-summary">
+            <div>
+                <span>Total Subjects:</span>
+                <span id="pdfTotalSubjects">0</span>
+            </div>
+            <div id="pdfTotalMarksContainer">
+                <span id="pdfTotalMarksLabel">Total Cumulative Marks:</span>
+                <span id="pdfTotalMarks">0</span>
+            </div>
+            <div>
+                <span>Final Rounded Average:</span>
+                <span id="pdfFinalAverage">0%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const grade7Base = ["English", "Dhivehi", "Uloom", "Quran", "Ijthimaaiyyaa", "Hadhees", "Thafseer", "Nahu", "Insha", "Mutala", "Seeraa", "Thauheedh", "Fiqh"];
+    const grade8and9Base = ["English", "Dhivehi", "Uloom", "Quran", "Ijthimaaiyyaa", "Hadhees", "Thafseer", "Nahu", "Insha", "Mutala", "Seeraa", "Thauheedh", "Fiqh", "Sorf"];
+    
+    const commonIlmeeBase = ["Quran", "Dhivehi", "English", "Fiqh", "Tafseer", "Hadhees", "Thauheedh", "Nahu", "Sorf", "Balaaqaa", "Insha", "Adab Nusoos", "Riyaaliyyath", "Feeziyaa", "Keemiyaa", "Ahya"];
+    const commonAdhabee = ["Quran", "Dhivehi", "English", "Fiqh", "Tafseer", "Hadhees", "Thauheedh", "Nahu", "Sorf", "Balaaqaa", "Insha", "Adab Nusoos", "Thaareekh", "Juguraafiyaa"];
+
+    let currentSubjects = [];
+    let currentAvgType = "";
+
+    function getGrade(mark) {
+        if (mark >= 89.5) return 'A*';
+        if (mark >= 79.5) return 'A';
+        if (mark >= 69.5) return 'B';
+        if (mark >= 59.5) return 'C';
+        if (mark >= 49.5) return 'D';
+        if (mark >= 39.5) return 'E';
+        return 'U';
+    }
+
+    function handleGradeChange() {
+        const grade = parseInt(document.getElementById('gradeSelect').value);
+        const streamGroup = document.getElementById('streamGroup');
+        
+        if (grade >= 10) {
+            streamGroup.classList.remove('hidden');
+        } else {
+            streamGroup.classList.add('hidden');
+            document.getElementById('streamSelect').value = "";
+        }
+    }
+
+    function generateSubjectList(grade, stream) {
+        let subjects = [];
+        if (grade === 7) subjects = [...grade7Base];
+        else if (grade === 8 || grade === 9) subjects = [...grade8and9Base];
+        else if (grade === 10) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee, "Subject 15"];
+        } else if (grade === 11) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee, "Falsalafaa", "Arool"];
+        } else if (grade === 12) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee];
+        }
+        return subjects;
+    }
+
+    function sanitizeId(str) {
+        return str.replace(/[^a-zA-Z0-9]/g, '_');
+    }
+
+    function generateSubjectFields() {
+        const gradeStr = document.getElementById('gradeSelect').value;
+        const stream = document.getElementById('streamSelect').value;
+        currentAvgType = document.getElementById('avgTypeSelect').value;
+
+        if (!gradeStr || !currentAvgType) {
+            alert("Please select your grade and calculation type.");
+            return;
+        }
+
+        const grade = parseInt(gradeStr);
+        if (grade >= 10 && !stream) {
+            alert("Please select your stream.");
+            return;
+        }
+
+        currentSubjects = generateSubjectList(grade, stream);
+        const container = document.getElementById('subjectsContainer');
+        container.innerHTML = ""; 
+
+        currentSubjects.forEach(subjName => {
+            const subjDiv = document.createElement('div');
+            subjDiv.className = 'subject-group';
+            
+            const title = document.createElement('div');
+            title.className = 'subject-title';
+            title.innerText = subjName;
+            subjDiv.appendChild(title);
+
+            const row = document.createElement('div');
+            row.className = 'mark-row';
+            const safeId = sanitizeId(subjName);
+
+            if (currentAvgType === 'term') {
+                row.innerHTML = `<div><input type="number" step="any" id="term_${safeId}" placeholder="Enter mark (e.g. 55.5)" min="0" max="100"></div>`;
+            } else {
+                row.innerHTML = `
+                    <div>
+                        <label class="sub-subject-label">Term 1</label>
+                        <input type="number" step="any" id="t1_${safeId}" placeholder="0-100" min="0" max="100">
+                    </div>
+                    <div>
+                        <label class="sub-subject-label">Term 2</label>
+                        <input type="number" step="any" id="t2_${safeId}" placeholder="0-100" min="0" max="100">
+                    </div>`;
+            }
+            subjDiv.appendChild(row);
+            container.appendChild(subjDiv);
+        });
+
+        document.getElementById('setupSection').classList.add('hidden');
+        document.getElementById('resultContainer').classList.add('hidden');
+        document.getElementById('marksSection').classList.remove('hidden');
+    }
+
+    function calculateAverage() {
+        let totalSum = 0;
+        let pdfTotalDisplayMarks = 0;
+        let subjectCount = currentSubjects.length;
+
+        let pdfTheadHTML = '';
+        let pdfTbodyHTML = '';
+
+        if (currentAvgType === 'term') {
+            pdfTheadHTML = `<tr><th style="width: 40%;">Subject</th><th style="width: 20%;">Input</th><th style="width: 20%;">Rounded</th><th style="width: 20%;">Grade</th></tr>`;
+            for (let subjName of currentSubjects) {
+                const id = `term_${sanitizeId(subjName)}`;
+                let rawMark = parseFloat(document.getElementById(id).value) || 0;
+                
+                let roundedMark = Math.round(rawMark);
+                let grade = getGrade(rawMark); 
+                
+                totalSum += roundedMark;
+                pdfTotalDisplayMarks += roundedMark;
+                
+                pdfTbodyHTML += `<tr><td>${subjName}</td><td>${rawMark}</td><td><strong>${roundedMark}</strong></td><td><strong>${grade}</strong></td></tr>`;
+            }
+            document.getElementById('pdfTotalMarksLabel').innerText = "Total Marks:";
+        } else {
+            pdfTheadHTML = `<tr><th style="width: 30%;">Subject</th><th style="width: 15%;">Term 1</th><th style="width: 15%;">Term 2</th><th style="width: 20%;">Aggregate</th><th style="width: 20%;">Grade</th></tr>`;
+            for (let subjName of currentSubjects) {
+                const idT1 = `t1_${sanitizeId(subjName)}`;
+                const idT2 = `t2_${sanitizeId(subjName)}`;
+                let rawT1 = parseFloat(document.getElementById(idT1).value) || 0;
+                let rawT2 = parseFloat(document.getElementById(idT2).value) || 0;
+                
+                let t1 = Math.round(rawT1);
+                let t2 = Math.round(rawT2);
+                
+                let subjAggregate = ((t1 + t2) * 100) / 200;
+                let roundedSubjAggregate = Math.round(subjAggregate);
+                let grade = getGrade(subjAggregate);
+                
+                totalSum += roundedSubjAggregate;
+                pdfTotalDisplayMarks += (t1 + t2);
+
+                pdfTbodyHTML += `<tr>
+                                    <td>${subjName}</td>
+                                    <td>${t1}</td>
+                                    <td>${t2}</td>
+                                    <td><strong>${roundedSubjAggregate}%</strong></td>
+                                    <td><strong>${grade}</strong></td>
+                                 </tr>`;
+            }
+            document.getElementById('pdfTotalMarksLabel').innerText = "Total Cumulative Marks:";
+        }
+
+        const rawFinalAverage = totalSum / subjectCount;
+        const finalAverageRounded = Math.round(rawFinalAverage);
+        const finalGrade = getGrade(rawFinalAverage);
+        
+        document.getElementById('resultValue').innerText = finalAverageRounded + "% (" + finalGrade + ")";
+        document.getElementById('resultContainer').classList.remove('hidden');
+        document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+
+        const gradeStr = document.getElementById('gradeSelect').options[document.getElementById('gradeSelect').selectedIndex].text;
+        const streamStr = document.getElementById('streamSelect').value;
+        const streamDisplay = streamStr ? ` - ${streamStr.charAt(0).toUpperCase() + streamStr.slice(1)} Stream` : '';
+        const avgDisplay = currentAvgType === 'term' ? 'Term Average' : 'Total Aggregate Average';
+
+        document.getElementById('pdfSubtitle').innerText = `${gradeStr}${streamDisplay} | ${avgDisplay}`;
+        document.getElementById('pdfThead').innerHTML = pdfTheadHTML;
+        document.getElementById('pdfTbody').innerHTML = pdfTbodyHTML;
+        document.getElementById('pdfTotalSubjects').innerText = subjectCount;
+        
+        if(currentAvgType === 'term') {
+            document.getElementById('pdfTotalMarks').innerText = pdfTotalDisplayMarks;
+        } else {
+            document.getElementById('pdfTotalMarks').innerText = pdfTotalDisplayMarks + ` / ${subjectCount * 200}`;
+        }
+        document.getElementById('pdfFinalAverage').innerText = finalAverageRounded + "% (" + finalGrade + ")";
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('pdfTemplate');
+
+        const opt = {
+            margin:       [0.5, 0.5, 0.5, 0.5],
+            filename:     'Student_Grade_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                logging: false, 
+                useCORS: true, 
+                backgroundColor: '#FFFFFF',
+                scrollX: 0, 
+                scrollY: 0  
+            },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+
+    function goBack() {
+        document.getElementById('marksSection').classList.add('hidden');
+        document.getElementById('resultContainer').classList.add('hidden');
+        document.getElementById('setupSection').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
