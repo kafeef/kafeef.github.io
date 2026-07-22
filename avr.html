@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>حاسبة المعدل الدراسي - كفيف</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="11.png" />
+    <link rel="icon" type="image/png" href="11.png"/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Lateef:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script async src="https://tally.so/widgets/embed.js"></script>    
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #ecfadc;
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            direction: rtl;
+        }
+        
+        .header {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-toggle-btn {
+            background-color: #609164bb;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1001;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .menu-toggle-btn:hover { 
+            background-color: #609164; 
+            transform: scale(1.05);
+        }
+        .menu-toggle-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100%;
+            background-color: #beceac; 
+            box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+            z-index: 999;
+            transition: left 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .side-menu.open {
+            left: 0;
+        }
+
+
+        .side-menu-header {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+    
+
+        .close-menu-btn {
+            background-color: #5caa6244; 
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .close-menu-btn:hover {
+            background-color: #c0131322; /* Reddish tint on hover to signal close/exit */
+            transform: translateX(-3px); /* Slide arrow slightly left on hover */
+        }
+        .close-menu-btn img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
+        .side-menu-links {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .menu-link {
+            font-family: 'Lateef', serif;
+            font-size: 26px;
+            color: #2f4931;
+            text-decoration: none;
+            padding: 10px;
+            background-color: #5caa6244;
+            border-radius: 8px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            text-align: center;
+        }
+        .menu-link:hover {
+            background-color: #5caa6288;
+            transform: scale(1.02);
+        }
+
+        .side-menu-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(47, 73, 49, 0.2);
+                padding-top: 20px;
+        }
+        .menu-logout-btn {
+            font-family: 'Aref Ruqaa', serif;
+            background-color: #c01313cc;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        .menu-logout-btn:hover {
+            background-color: #c01313;
+        }
+
+        h1 {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 42px;
+            margin-bottom: 30px;
+            color: #28462b;
+            animation: fadeIn 1.5s ease-out;
+            text-shadow: 0px 0px 50px #2f4931b4;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            animation: fadeIn 1.2s ease-in-out;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Form Setup Card */
+        .setup-card {
+            background: rgba(190, 206, 172, 0.4);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0px 20px 30px rgba(17, 54, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #2f4931;
+            font-family: 'Lateef', serif;
+            font-size: 28px;
+        }
+
+        /* Selection Boxes Styles */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+        }
+
+        .option-box {
+            background: #ffffff;
+            border: 2px solid #beceac;
+            border-radius: 15px;
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            font-family: 'Lateef', serif;
+            font-size: 24px;
+            color: #2f4931;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .option-box:hover {
+            border-color: #7bc781;
+            transform: translateY(-2px);
+        }
+
+        .option-box.selected {
+            background: #28462b;
+            color: #ffffff;
+            border-color: #28462b;
+            box-shadow: 0 8px 15px rgba(40, 70, 43, 0.25);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #beceac;
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: #fff;
+            color: #2f4931;
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7bc781;
+        }
+
+        .hidden { display: none !important; }
+
+        .card {
+            width: 100%;
+            max-width: 280px;
+            background: #ffffff99;
+            border-radius: 25px;
+            box-shadow: 0px 20px 30px rgba(17, 54, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: slideUp .75s ease-out forwards;
+            text-align: center;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 30px 40px rgba(17,54,0,0.25); }
+        
+        .card .text-preview {
+            font-family: 'Lateef', serif;
+            font-size: 32px;
+            color: #2f4931;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .mark-row {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+        
+        .mark-row div { width: 100%; }
+        
+        .sub-subject-label {
+            font-size: 18px;
+            color: #535f46;
+            font-family: 'Lateef', serif;
+            margin-bottom: 5px;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px auto 0;
+            padding: 12px 25px;
+            background-color: #7bc781;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+        .download-btn:hover { background-color: #5caa62; transform: scale(1.03); }
+
+        .attention-btn {
+            background-color: #ffb7b2;
+            box-shadow: 0 0 15px rgba(255, 183, 178, 0.6);
+            position: relative;
+            border: none;
+            outline: 3px solid transparent;
+            background-image: linear-gradient(#ffb7b2, #ffb7b2), 
+                              linear-gradient(90deg, #ffb7b2, #ffffff, #ff9e99, #ffb7b2);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            background-size: 200% 100%;
+            animation: moveOutline 3s infinite linear, pulseGlow 2s infinite ease-in-out;
+            color: #7a1d1d;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .back-btn {
+            background-color: #beceac;
+            color: #2f4931;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background-color: #9fd4a3; }
+
+        #resultContainer {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #ffffffbb;
+            border: 2px dashed #7bc781;
+            border-radius: 20px;
+            text-align: center;
+            color: #2f4931;
+            width: 100%;
+            max-width: 500px;
+            animation: slideUp 0.8s ease-out;
+        }
+        #resultContainer h3 { font-family: 'Aref Ruqaa', serif; font-size: 32px; }
+        #resultValue {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #28462b;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes moveOutline { 0% { background-position: 0% 0%, 0% 0%; } 100% { background-position: 0% 0%, -200% 0%; } }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 12px 2px rgba(255, 183, 178, 0.5); transform: scale(1); } 50% { box-shadow: 0 0 25px 6px rgba(255, 183, 178, 0.9); transform: scale(1.02); } }
+
+        /* PDF Area */
+        #pdfContainer { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            width: 750px; 
+            z-index: -9999; 
+            opacity: 0.01; 
+            pointer-events: none; 
+            direction: rtl; 
+        }
+
+        #pdfTemplate {
+            padding: 40px; 
+            background: #FFFFFF !important; 
+            color: #000000 !important;
+            font-family: 'Montserrat', Tahoma, Arial, sans-serif; 
+            box-sizing: border-box;
+        }
+        
+        .pdf-header { text-align: center; border-bottom: 3px solid #28462b; padding-bottom: 15px; margin-bottom: 30px; }
+        .pdf-header h2 { margin: 0; color: #28462b; font-size: 24px; font-family: 'Aref Ruqaa', serif; }
+        
+        .pdf-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 30px; 
+            font-size: 14px; 
+            font-family: 'Amiri', 'Traditional Arabic', serif !important; 
+            background: #FFFFFF; 
+        }
+        .pdf-table th, .pdf-table td { border: 1px solid #9CA3AF; padding: 10px 8px; text-align: center; }
+        .pdf-table th { background-color: #28462b !important; color: #FFFFFF !important; font-weight: bold; }
+        .pdf-table td:first-child { text-align: right; font-weight: 600; }
+        .pdf-table tr:nth-child(even) { background-color: #ecfadc; }
+        
+        .pdf-summary { 
+            margin-top: 30px; 
+            border: 2px solid #28462b; 
+            border-radius: 8px; 
+            padding: 20px; 
+            background-color: #f4fdf4; 
+            font-family: 'Amiri', 'Traditional Arabic', serif; 
+        }
+        .pdf-summary div { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 10px; font-weight: bold; }
+        .pdf-summary div:last-child { font-size: 18px; color: #28462b; border-top: 2px dashed #D1D5DB; padding-top: 12px; }
+        
+        @media (max-width: 500px) { h1 { font-size: 32px; } .card { max-width: 90%; } }
+
+        .footer {
+            font-family: 'Aref Ruqaa', serif;
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px 0;
+            font-size: 20px;
+            color: #2f4931;
+            opacity: 0.7;
+            border-top: 1px solid #ccc;
+            width: 100%;
+            max-width: 600px;
+        }
+        .report-note {
+            font-family: 'Aref Ruqaa', serif;
+            text-align: center;
+            margin-top: 2px;
+            font-size: 18px;
+            color: #ff000093;
+            opacity: 0.6;
+            cursor: pointer;
+        }        
+    </style>
+</head>
+<body>
+  <div id="menuOverlay" class="menu-overlay"></div>
+
+  <div id="sideMenu" class="side-menu">
+    <div class="side-menu-header">
+      <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close Menu">
+        <img src="icon/back.png" alt="رجوع" style="width: 28px; height: auto; display: block;">
+      </button>
+    </div>
+  
+    <div class="side-menu-links">
+      <a href="./index" class="menu-link" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img src="icon/home.png" style="width: 28px; height: auto;">
+      </a>
+      <a href="./countdown" class="menu-link">العد التنازلي</a>
+      <a href="./flash" class="menu-link">البطاقات التعليمية</a>
+    </div>
+  
+    <div class="side-menu-footer">
+      <button id="logoutBtn" class="menu-logout-btn" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img src="icon/logout.png" alt="تسجيل الخروج" style="width: 22px; height: auto;">
+        <span>تسجيل الخروج</span>
+      </button>
+    </div>
+  </div>
+
+    <div class="header">
+        <button id="menuToggleBtn" class="menu-toggle-btn">
+            <img src="icon/menu.png" alt="القائمة">
+        </button>
+        <h1>حاسبة المعدل الدراسي</h1>
+    </div>
+
+    <div class="setup-card" id="setupSection">
+        <div class="form-group">
+            <label>صف</label>
+            <div class="option-grid">
+                <div class="option-box" onclick="selectGrade(7, this)">السابع</div>
+                <div class="option-box" onclick="selectGrade(8, this)">الثامن</div>
+                <div class="option-box" onclick="selectGrade(9, this)">التاسع</div>
+                <div class="option-box" onclick="selectGrade(10, this)">العاشر</div>
+                <div class="option-box" onclick="selectGrade(11, this)">الحادي عشر</div>
+                <div class="option-box" onclick="selectGrade(12, this)">الثاني عشر</div>
+            </div>
+        </div>
+
+        <div class="form-group hidden" id="streamGroup">
+            <label>مسار</label>
+            <div class="option-grid">
+                <div class="option-box" onclick="selectStream('ilmee', this)">علمي</div>
+                <div class="option-box" onclick="selectStream('adhabee', this)">أدبي</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>حساب</label>
+            <div class="option-grid">
+                <div class="option-box" onclick="selectAvgType('term', this)">معدل الفصل</div>
+                <div class="option-box" onclick="selectAvgType('total', this)">الدرجة المتوسط</div>
+            </div>
+        </div>
+
+        <button class="download-btn" onclick="generateSubjectFields()">التالي</button>
+    </div>
+
+    <div id="marksSection" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        
+        <div id="subjectsContainer" class="container"></div>
+        
+        <button class="attention-btn" onclick="calculateAverage()" style="max-width: 400px; margin-top: 30px;">احسب المعدل الآن</button>
+    </div>
+
+    <div id="resultContainer" class="hidden">
+        <h3>معدلك المحسوب:</h3>
+        <div id="resultValue">0%</div>
+        <!-- <button onclick="downloadPDF()" class="download-btn">PDF</button> -->
+    </div>
+
+    <div id="pdfContainer">
+        <div id="pdfTemplate">
+            <div class="pdf-header">
+                <h2>تقرير المعدل الدراسي</h2>
+                <p id="pdfSubtitle">القسم / الفصل</p>
+            </div>
+            
+            <table class="pdf-table">
+                <thead id="pdfThead"></thead>
+                <tbody id="pdfTbody"></tbody>
+            </table>
+
+            <div class="pdf-summary">
+                <div>
+                    <span>إجمالي عدد المواد</span>
+                    <span id="pdfTotalSubjects">0</span>
+                </div>
+                <div id="pdfTotalMarksContainer">
+                    <span id="pdfTotalMarksLabel">إجمالي الدرجات</span>
+                    <span id="pdfTotalMarks">0</span>
+                </div>
+                <div>
+                    <span>درجة المتوسط</span>
+                    <span id="pdfFinalAverage">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <footer class="footer">
+    حقوق الطبع والنشر محفوظة لأصحابها الشرعيين
+  </footer>
+
+
+  <div class="report-note"
+    data-tally-open="3l5NWV"
+    data-tally-layout="modal"
+    data-tally-width="400"
+    data-tally-hide-title="1"
+    data-tally-emoji-animation="none"
+    data-tally-auto-close="2000">
+    اضغط هنا للإبلاغ عن خطأ في أي درس!
+  </div>    
+<script>
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    function openMenu() {
+        sideMenu.classList.add('open');
+        menuOverlay.classList.add('active');
+        menuToggleBtn.style.opacity = '0';
+        menuToggleBtn.style.pointerEvents = 'none';
+    }
+
+    function closeSideMenu() {
+        sideMenu.classList.remove('open');
+        menuOverlay.classList.remove('active');
+        menuToggleBtn.style.opacity = '1';
+        menuToggleBtn.style.pointerEvents = 'auto';
+    }
+
+    menuToggleBtn.addEventListener('click', openMenu);
+    closeMenuBtn.addEventListener('click', closeSideMenu);
+    menuOverlay.addEventListener('click', closeSideMenu);    
+    
+    const grade7Base = ["الإنجليزية", "الديفيهي", "العلوم", "القرآن", "الاجتماعيات", "الحديث", "التفسير", "النحو", "الإنشاء", "المطالعة", "السيرة", "التوحيد", "الفقه"];
+    const grade8and9Base = ["الإنجليزية", "الديفيهي", "العلوم", "القرآن", "الاجتماعيات", "الحديث", "التفسير", "النحو", "الإنشاء", "المطالعة", "السيرة", "التوحيد", "الفقه", "الصرف"];
+    
+    const commonIlmeeBase = ["القرآن", "الديفيهي", "الإنجليزية", "الفقه", "التفسير", "الحديث", "التوحيد", "النحو", "الصرف", "البلاغة", "الإنشاء", "الأدب والنصوص", "الرياضيات", "الفيزياء", "الكيمياء", "الأحياء"];
+    const commonAdhabee = ["القرآن", "الديفيهي", "الإنجليزية", "الفقه", "التفسير", "الحديث", "التوحيد", "النحو", "الصرف", "البلاغة", "الإنشاء", "الأدب والنصوص", "التاريخ", "الجغرافيا"];
+
+    let selectedGrade = null;
+    let selectedStream = null;
+    let currentAvgType = null;
+    let currentSubjects = [];
+
+    function selectGrade(grade, el) {
+        selectedGrade = grade;
+        const parent = el.parentElement;
+        parent.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
+        el.classList.add('selected');
+
+        const streamGroup = document.getElementById('streamGroup');
+        if (grade >= 10) {
+            streamGroup.classList.remove('hidden');
+        } else {
+            streamGroup.classList.add('hidden');
+            selectedStream = null;
+            streamGroup.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
+        }
+    }
+
+    function selectStream(stream, el) {
+        selectedStream = stream;
+        const parent = el.parentElement;
+        parent.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function selectAvgType(type, el) {
+        currentAvgType = type;
+        const parent = el.parentElement;
+        parent.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function getGrade(mark) {
+        if (mark >= 89.5) return 'A*';
+        if (mark >= 79.5) return 'A';
+        if (mark >= 69.5) return 'B';
+        if (mark >= 59.5) return 'C';
+        if (mark >= 49.5) return 'D';
+        if (mark >= 39.5) return 'E';
+        return 'U';
+    }
+
+    function generateSubjectList(grade, stream) {
+        let subjects = [];
+        if (grade === 7) subjects = [...grade7Base];
+        else if (grade === 8 || grade === 9) subjects = [...grade8and9Base];
+        else if (grade === 10) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee, "مادة إضافية 15"];
+        } else if (grade === 11) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee, "الفلسفة", "العروض"];
+        } else if (grade === 12) {
+            subjects = (stream === 'ilmee') ? [...commonIlmeeBase] : [...commonAdhabee];
+        }
+        return subjects;
+    }
+
+    function sanitizeId(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
+        return 'subj_' + Math.abs(hash);
+    }
+
+    function generateSubjectFields() {
+        if (!selectedGrade || !currentAvgType) {
+            alert("يرجى تحديد الصف ونوع الحساب أولاً.");
+            return;
+        }
+
+        if (selectedGrade >= 10 && !selectedStream) {
+            alert("يرجى تحديد المسار (علمي/أدبي).");
+            return;
+        }
+
+        currentSubjects = generateSubjectList(selectedGrade, selectedStream);
+        const container = document.getElementById('subjectsContainer');
+        container.innerHTML = ""; 
+
+        const maxMark = (selectedGrade === 7 || selectedGrade === 8) ? 60 : 100;
+        const placeholderText = `0 - ${maxMark}`;
+
+        currentSubjects.forEach(subjName => {
+            const subjDiv = document.createElement('div');
+            subjDiv.className = 'card';
+            
+            const safeId = sanitizeId(subjName);
+            let inputsHTML = '';
+
+            if (currentAvgType === 'term') {
+                inputsHTML = `<div class="mark-row">
+                                <div><input type="number" step="any" id="term_${safeId}" placeholder="${placeholderText}" min="0" max="${maxMark}"></div>
+                              </div>`;
+            } else {
+                inputsHTML = `<div class="mark-row">
+                                <div>
+                                    <label class="sub-subject-label">الفصل الأول</label>
+                                    <input type="number" step="any" id="t1_${safeId}" placeholder="${placeholderText}" min="0" max="${maxMark}">
+                                </div>
+                                <div style="margin-top:10px;">
+                                    <label class="sub-subject-label">الفصل الثاني</label>
+                                    <input type="number" step="any" id="t2_${safeId}" placeholder="${placeholderText}" min="0" max="${maxMark}">
+                                </div>
+                              </div>`;
+            }
+
+            subjDiv.innerHTML = `
+                <div class="text-preview">${subjName}</div>
+                ${inputsHTML}
+            `;
+            container.appendChild(subjDiv);
+        });
+
+        document.getElementById('setupSection').classList.add('hidden');
+        document.getElementById('resultContainer').classList.add('hidden');
+        document.getElementById('marksSection').classList.remove('hidden');
+    }
+
+    function calculateAverage() {
+        let totalSum = 0;
+        let pdfTotalDisplayMarks = 0;
+        let subjectCount = currentSubjects.length;
+        let pdfTheadHTML = '';
+        let pdfTbodyHTML = '';
+        const isGrade7or8 = (selectedGrade === 7 || selectedGrade === 8);
+        const maxInput = isGrade7or8 ? 60 : 100;
+
+        const inputs = document.querySelectorAll('#subjectsContainer input[type="number"]');
+        for (let input of inputs) {
+            if (input.value.trim() === "") {
+                alert("يرجى إدخال جميع الدرجات قبل الحساب.");
+                input.focus();
+                return;
+            }
+        }        
+        
+        if (currentAvgType === 'term') {
+            pdfTheadHTML = `<tr><th style="width: 40%;">المادة</th><th style="width: 20%;">المدخل</th><th style="width: 20%;">مقرب</th><th style="width: 20%;">التقدير</th></tr>`;
+            for (let subjName of currentSubjects) {
+                const id = `term_${sanitizeId(subjName)}`;
+                const el = document.getElementById(id);
+                let rawMark = el ? (parseFloat(el.value) || 0) : 0;
+                rawMark = Math.max(0, Math.min(maxInput, rawMark)); // Clamping based on grade
+                
+                let convertedMark = rawMark;
+                if (isGrade7or8) {
+                    let step1 = rawMark * 100; // Step 1: Multiply input mark by 100 separately
+                    convertedMark = step1 / 60; // Step 2: Divide result by 60
+                }
+
+                let roundedMark = Math.round(convertedMark);
+                let grade = getGrade(convertedMark); 
+                
+                totalSum += roundedMark;
+                pdfTotalDisplayMarks += rawMark;
+                
+                pdfTbodyHTML += `<tr><td>${subjName}</td><td>${rawMark}</td><td><strong>${roundedMark}</strong></td><td><strong>${grade}</strong></td></tr>`;
+            }
+            const labelEl = document.getElementById('pdfTotalMarksLabel');
+            if (labelEl) labelEl.innerText = "إجمالي الدرجات:";
+        } else {
+            pdfTheadHTML = `<tr><th style="width: 30%;">المادة</th><th style="width: 15%;">الفصل 1</th><th style="width: 15%;">الفصل 2</th><th style="width: 20%;">المجموع</th><th style="width: 20%;">التقدير</th></tr>`;
+            for (let subjName of currentSubjects) {
+                const idT1 = `t1_${sanitizeId(subjName)}`;
+                const idT2 = `t2_${sanitizeId(subjName)}`;
+                let rawT1 = parseFloat(document.getElementById(idT1).value) || 0;
+                let rawT2 = parseFloat(document.getElementById(idT2).value) || 0;
+                
+                rawT1 = Math.max(0, Math.min(maxInput, rawT1));
+                rawT2 = Math.max(0, Math.min(maxInput, rawT2));
+                
+                let convertedT1 = rawT1;
+                let convertedT2 = rawT2;
+
+                if (isGrade7or8) {
+                    convertedT1 = (rawT1 * 100) / 60;
+                    convertedT2 = (rawT2 * 100) / 60;
+                }
+
+                let t1 = Math.round(convertedT1);
+                let t2 = Math.round(convertedT2);
+                
+                let subjAggregate = ((t1 + t2) * 100) / 200;
+                let roundedSubjAggregate = Math.round(subjAggregate);
+                let grade = getGrade(subjAggregate);
+                
+                totalSum += roundedSubjAggregate;
+                pdfTotalDisplayMarks += (rawT1 + rawT2);
+
+                pdfTbodyHTML += `<tr>
+                                    <td>${subjName}</td>
+                                    <td>${rawT1}</td>
+                                    <td>${rawT2}</td>
+                                    <td><strong>${roundedSubjAggregate}%</strong></td>
+                                    <td><strong>${grade}</strong></td>
+                                 </tr>`;
+            }
+            const labelEl = document.getElementById('pdfTotalMarksLabel');
+            if (labelEl) labelEl.innerText = "إجمالي الدرجات:";
+        }
+
+        const rawFinalAverage = totalSum / subjectCount;
+        const finalAverageRounded = Math.round(rawFinalAverage);
+        const finalGrade = getGrade(rawFinalAverage);
+        
+        document.getElementById('resultValue').innerText = finalAverageRounded + "% (" + finalGrade + ")";
+        document.getElementById('resultContainer').classList.remove('hidden');
+        document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+
+        const gradeNames = {
+            7: 'الصف السابع',
+            8: 'الصف الثامن',
+            9: 'الصف التاسع',
+            10: 'الصف العاشر',
+            11: 'الصف الحادي عشر',
+            12: 'الصف الثاني عشر'
+        };
+
+        const gradeStr = gradeNames[selectedGrade] || '';
+        const streamDisplay = selectedStream === 'ilmee' ? ' - مسار علمي' : (selectedStream === 'adhabee' ? ' - مسار أدبي' : '');
+        const avgDisplay = currentAvgType === 'term' ? 'معدل الفصل الدراسي' : 'الدرجة المتوسط';
+
+        // Safe DOM updates
+        const subtitleEl = document.getElementById('pdfSubtitle');
+        if (subtitleEl) subtitleEl.innerText = `${gradeStr}${streamDisplay} | ${avgDisplay}`;
+        
+        const theadEl = document.getElementById('pdfThead');
+        if (theadEl) theadEl.innerHTML = pdfTheadHTML;
+        
+        const tbodyEl = document.getElementById('pdfTbody');
+        if (tbodyEl) tbodyEl.innerHTML = pdfTbodyHTML;
+        
+        const totalSubjEl = document.getElementById('pdfTotalSubjects');
+        if (totalSubjEl) totalSubjEl.innerText = subjectCount;
+        
+        const totalMarksEl = document.getElementById('pdfTotalMarks');
+        if (totalMarksEl) {
+            const maxPossible = isGrade7or8 ? (subjectCount * 60) : (subjectCount * 100);
+            if(currentAvgType === 'term') {
+                totalMarksEl.innerText = `${pdfTotalDisplayMarks} / ${maxPossible}`;
+            } else {
+                totalMarksEl.innerText = `${pdfTotalDisplayMarks} / ${maxPossible * 2}`;
+            }
+        }
+        
+        const finalAvgEl = document.getElementById('pdfFinalAverage');
+        if (finalAvgEl) finalAvgEl.innerText = finalAverageRounded + "% (" + finalGrade + ")";
+    }
+
+    function downloadPDF() {
+        window.scrollTo(0, 0);
+
+        const randomNum = Math.floor(Math.random() * 100000);
+        const fileName = `avrcal${randomNum}.pdf`;
+
+        const element = document.getElementById('pdfTemplate');
+        const opt = {
+            margin:       [0.5, 0.5, 0.5, 0.5],
+            filename:     'تقرير_المعدل_الدراسي.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true, 
+                backgroundColor: '#FFFFFF',
+                scrollX: 0,
+                scrollY: 0
+            },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+
+    function goBack() {
+        document.getElementById('marksSection').classList.add('hidden');
+        document.getElementById('resultContainer').classList.add('hidden');
+        document.getElementById('setupSection').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>

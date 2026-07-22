@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <title>ثاني الثانوي - كفيف</title>
+  <title>بطاقات تعليمية - كفيف</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta property="og:image" content="11.png" />
   <link rel="icon" type="image/png" href="11.png"/>
@@ -102,17 +102,19 @@
     .side-menu-header {
       display: flex;
       justify-content: flex-end;
+      gap: 12px;
       margin-bottom: 30px;
     }
+    
 
-    .close-menu-btn {
-      background-color: #5caa6244; /* Soft background box so it's visible */
+    .close-menu-btn { /* Menu ah dhaa button ves mi class ga */
+      background-color: #5caa6244; 
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.3s ease;
-      width: 40px;
-      height: 40px;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -123,8 +125,8 @@
       transform: translateX(-3px); /* Slide arrow slightly left on hover */
     }
     .close-menu-btn img {
-      width: 22px;
-      height: 22px;
+      width: 14px;
+      height: 14px;
       object-fit: contain;
     }
 
@@ -397,6 +399,7 @@
     .download-btn img { width: 20px; height: 20px; }
     .download-btn:hover { background-color: #9fd4a3; transform: scale(1.05); }
 
+    /* Pastel Pink Glow & Animated Outline Button Class */
     .attention-btn {
       background-color: #ffb7b2;
       box-shadow: 0 0 15px rgba(255, 183, 178, 0.6);
@@ -410,6 +413,7 @@
       box-shadow: 0 0 15px rgba(255, 183, 178, 0.6);
       position: relative;
       border: none;
+      /* We use a gradient outline trick for the continuous moving effect */
       outline: 3px solid transparent;
       background-image: linear-gradient(#ffb7b2, #ffb7b2), 
                         linear-gradient(90deg, #ffb7b2, #ffffff, #ff9e99, #ffb7b2);
@@ -425,6 +429,7 @@
                         linear-gradient(90deg, #ffc6c2, #ffffff, #ff857f, #ffc6c2);
     }
 
+    /* Animates the outline so it looks like light is travelling around the border */
     @keyframes moveOutline {
       0% {
         background-position: 0% 0%, 0% 0%;
@@ -434,6 +439,7 @@
       }
     }
 
+    /* Animates the soft pastel glow to breath in and out */
     @keyframes pulseGlow {
       0%, 100% {
         box-shadow: 0 0 12px 2px rgba(255, 183, 178, 0.5);
@@ -541,13 +547,14 @@
       flex-shrink: 0;
     }
     
+    /* Container to handle responsive image sizing */
     .image-container {
       flex-grow: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      min-height: 0;
+      min-height: 0; /* Prevents container from blowing past flex boundaries */
     }
     
     .image-container img.preview-img {
@@ -569,7 +576,7 @@
 <body>
   <div id="menuOverlay" class="menu-overlay"></div>
 
-  <div id="sideMenu" class="side-menu">
+<div id="sideMenu" class="side-menu">
     <div class="side-menu-header">
       <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close Menu">
         <img src="icon/back.png" alt="رجوع" style="width: 28px; height: auto; display: block;">
@@ -577,8 +584,10 @@
     </div>
   
     <div class="side-menu-links">
+      <a href="./index" class="menu-link" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img src="icon/home.png" style="width: 28px; height: auto;">
+      </a>
       <a href="./countdown" class="menu-link">العد التنازلي</a>
-      <a href="./flash" class="menu-link">البطاقات التعليمية</a>
       <a href="./avr" class="menu-link">حاسبة المعدل الدراسي</a>
     </div>
   
@@ -594,77 +603,71 @@
       <button id="menuToggleBtn" class="menu-toggle-btn">
         <img src="icon/menu.png" alt="القائمة">
       </button>
-      <h1>جمع الدروس لثاني الثانوي</h1>
+      <h1>بطاقات تعليمية</h1>
   </div>
 
-  <div class="container">
+  <div class="container">    
     <div class="card tauheedh">
       <div class="text-preview">توحيد</div>
       <div class="button-group">
-        <button class="download-btn" onclick='openModal("توحيد", [
-          { file: "pdf/shifaa_1.pdf", name: "شفاء العليل" },
-          { file: "pdf/shifaa_1_text.pdf", name: "شفاء العليل - مع المتن" },
-          { file: "pdf/Grade11_Tawheed_Term1_Notes.pdf", name: "مذكرة توحيد - الشيخ شعيب ناظم" }
-        ])'>
-            <img src="icon/tauheedhicon.png" alt="Download" class="subjectimg">
-        </button>
+        <a href="./flash/thauheedh" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
+          </button>
+        </a>
       </div>
     </div>
-
+  
     <div class="card tafhad">
       <div class="text-preview">تفسير</div>
       <div class="button-group">
-          <button class="download-btn" onclick='openModal("تفسير", [
-            { file: "pdf/11_thafseerFAZNA_firstterm.pdf", name: "تفسير - فزنة" },
-          ])'>
-            <img src="icon/tafhadicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/Thafseer" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
+        </a>
       </div>
     </div>
 
     <div class="card tafhad">
       <div class="text-preview">حديث</div>
       <div class="button-group">
-          <button class="download-btn" onclick='openModal("حديث", [
-            { file: "pdf/11_hadheesFAZNA_firstterm.pdf", name: "حديث - فزنة" },
-            { file: "pdf/11_saudhhedhihadhees_firstterm.pdf", name: "حديث - د. سعد بن حسن" },
-          ])'>
-            <img src="icon/tafhadicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/hadhees" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
+        </a>
       </div>
     </div>
 
     <div class="card fiqh">
       <div class="text-preview">فقه</div>
       <div class="button-group">
-        <button class="download-btn" onclick='openModal("فقه", [
-          { file: "pdf/11_fiqh_firstterm.pdf", name: "جمع دروس الفقه" },
-          { file: "pdf/11_fiqhBUNK_firstterm.pdf", name: "بنك الأسئلة" },
-          { file: "pdf/11_fiqhQnA_firstterm.pdf", name: "أسئلة مع الأجوبة" },
-          { file: "pdf/11_fiqhSHORTBUNK_firstterm.pdf", name: "بنك أسألة الامتحان" }
-        ])'>
-            <img src="icon/fiqhicon.png" alt="Download" class="subjectimg">
-        </button>
+        <a href="./flash/fiqh" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
+          </button>
+        </a>
       </div>
     </div>
 
     <div class="card nahu">
       <div class="text-preview">نحو</div>
       <div class="button-group">
-        <a href="/pdf/11_nahu_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/nahuicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/nahu" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card zorf">
       <div class="text-preview">صرف</div>
       <div class="button-group">
-        <a href="/pdf/11_zorf_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/zorficon.png" alt="Download" class="subjectimg">
+        <a href="./flash/zorf" target="_blank">
+          <button class="flash-btn na" >
+              <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
@@ -673,87 +676,86 @@
     <div class="card insha">
       <div class="text-preview">إنشاء</div>
       <div class="button-group">
-        <a href="/pdf/11_insha_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/inshaicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/insha" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card adab">
       <div class="text-preview">أدب</div>
       <div class="button-group">
-        <a href="/pdf/11_adab_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/adabicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/adab" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card nusus">
       <div class="text-preview">نصوص</div>
       <div class="button-group">
-        <a href="/pdf/11_nusus_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/nususicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/nusoos" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card muthala">
       <div class="text-preview">مطالعة</div>
       <div class="button-group">
-        <a href="/pdf/11_mutala_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/muthalaicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/mutala" target="_blank">
+          <button class="flash-btn na" >
+              <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card balaga">
       <div class="text-preview">بلاغة</div>
       <div class="button-group">
-        <a href="/pdf/11_balagaBUNK_firstterm.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/balagaicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/nusoos" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+  
     <div class="card thafaalul">
       <div class="text-preview">تفاضل</div>
       <div class="button-group">
-        <a href="/pdf/thafaalul_11_1.pdf" target="_blank">
-          <button class="download-btn">
-            <img src="icon/thafaalulicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/thafaalul" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
     </div>
-
+    
     <div class="card ahya">
       <div class="text-preview">أحياء</div>
       <div class="button-group">
-          <button class="download-btn" onclick='openModal("أحياء", [
-            { file: "pdf/11_ahya_firstterm.pdf", name: "بنك الأسئلة" },
-            { file: "pdf/ahya_nooreldien.pdf", name: "نورالدين" },
-          ])'>
-            <img src="icon/ahyaicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/ahya" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
+        </a>
       </div>
     </div>
 
     <div class="card kymya">
       <div class="text-preview">كيمياء</div>
       <div class="button-group">
-        <a href="./404">
-          <button class="download-btn na">
-            <img src="icon/kymyaicon.png" alt="Download" class="subjectimg">
+        <a href="./flash/keemiyaa" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
           </button>
         </a>
       </div>
@@ -762,14 +764,11 @@
     <div class="card fyzya">
       <div class="text-preview">فيزياء</div>
       <div class="button-group">
-        <button class="download-btn" onclick='openModal("فيزياء", [
-          { file: "pdf/fyzya_11_firstterm.pdf", name: "كتاب فيزياء" },
-          { file: "pdf/fyzyaQawanin_11.pdf", name: "ملخص قوانين فيزياء" },
-          { file: "pdf/GR_11_physT1.pdf", name: "مراجعة فيزياء" },
-          { file: "pdf/مراجعة_فيزياء_ت١ 3.pdf", name: "تمارين فيزياء" },
-        ])'>
-            <img src="icon/fyzyaicon.png" alt="Download" class="subjectimg">
-        </button>
+        <a href="./flash/feeziyaa" target="_blank">
+          <button class="flash-btn na" >
+            <img src="icon/flash.png" alt="Flash Cards">
+          </button>
+        </a>
       </div>
     </div>
   </div>
