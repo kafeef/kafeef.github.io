@@ -89,7 +89,7 @@
   </div>
 
   <script>
-    const target = new Date(2028, 2, 18, 0, 0, 0);
+    const target = new Date(2027, 2, 18, 0, 0, 0);
     const map = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
     function toArabicIndic(num){
       return String(num).split("").map(c => (c >= '0' && c <= '9' ? map[c.charCodeAt(0)-48] : c)).join("");
